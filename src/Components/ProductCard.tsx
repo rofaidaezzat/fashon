@@ -1,6 +1,7 @@
 import { useState } from "react";
-import { Search, ShoppingBag, ChevronLeft, ChevronRight } from "lucide-react";
+import { Eye, ShoppingBag, ChevronLeft, ChevronRight } from "lucide-react";
 import { type IProduct } from "../api/products";
+import { Link } from "react-router-dom";
 
 interface ProductCardProps {
     product: IProduct;
@@ -70,9 +71,11 @@ const ProductCard = ({ product }: ProductCardProps) => {
 
                 {/* Overlay Buttons */}
                 <div className="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center gap-2 pointer-events-none">
-                    <button className="bg-white text-gray-900 p-3 rounded-full hover:bg-rose-500 hover:text-white transition-colors transform translate-y-4 group-hover:translate-y-0 duration-300 pointer-events-auto">
-                        <Search className="w-5 h-5" />
-                    </button>
+                    <Link to={`/product/${product._id}`}>
+                        <button className="bg-white text-gray-900 p-3 rounded-full hover:bg-rose-500 hover:text-white transition-colors transform translate-y-4 group-hover:translate-y-0 duration-300 pointer-events-auto">
+                            <Eye className="w-5 h-5" />
+                        </button>
+                    </Link>
                     <button
                         onClick={handleBuyOnWhatsApp}
                         className="bg-white text-gray-900 p-3 rounded-full hover:bg-green-500 hover:text-white transition-colors transform translate-y-4 group-hover:translate-y-0 duration-300 delay-75 pointer-events-auto"

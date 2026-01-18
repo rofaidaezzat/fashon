@@ -17,6 +17,7 @@ export interface IPagination {
     currentPage: number;
     limit: number;
     numberOfPages: number;
+    next?: number;
 }
 
 export interface ProductResponse {
@@ -28,7 +29,19 @@ export interface ProductResponse {
     data: IProduct[];
 }
 
+export interface SingleProductResponse {
+    status: string;
+    code: number;
+    message: string;
+    data: IProduct;
+}
+
 export const getProducts = async (): Promise<ProductResponse> => {
     const response = await axiosInstance.get<ProductResponse>("api/v1/products");
+    return response.data;
+};
+
+export const getProductById = async (id: string): Promise<SingleProductResponse> => {
+    const response = await axiosInstance.get<SingleProductResponse>(`api/v1/products/${id}`);
     return response.data;
 };
