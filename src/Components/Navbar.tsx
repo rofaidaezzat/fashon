@@ -1,5 +1,5 @@
 import { Link, useLocation } from "react-router-dom";
-import { ShoppingBag, Menu, X, Search, User } from "lucide-react";
+import { Menu, X } from "lucide-react";
 import { useState } from "react";
 import logo from "../assets/logo.png";
 
@@ -22,7 +22,11 @@ const Navbar = () => {
         <div className="flex items-center justify-between">
           {/* Logo */}
           <Link to="/" className="flex items-center space-x-2 group">
-            <img src={logo} alt="Fashon Logo" className="h-12 w-auto object-contain" />
+            <img
+              src={logo}
+              alt="Fashon Logo"
+              className="h-12 w-auto object-contain"
+            />
           </Link>
 
           {/* Desktop Navigation */}
@@ -39,8 +43,6 @@ const Navbar = () => {
               </Link>
             ))}
           </div>
-
-          
 
           {/* Mobile Menu Button */}
           <button
@@ -72,12 +74,12 @@ const Navbar = () => {
                 {link.name}
               </Link>
             ))}
-             <Link
-                to="/shop"
-                onClick={() => setIsMenuOpen(false)}
-                 className="block py-3 px-4 rounded-xl font-medium text-gray-600 hover:bg-gray-50"
-              >
-                My Cart (0)
+            <Link
+              to="/shop"
+              onClick={() => setIsMenuOpen(false)}
+              className="block py-3 px-4 rounded-xl font-medium text-gray-600 hover:bg-gray-50"
+            >
+              My Cart (0)
             </Link>
           </div>
         )}
