@@ -5,7 +5,7 @@ import ProductCard from "../Components/ProductCard";
 
 const Shop = () => {
   const [selectedCategory, setSelectedCategory] = useState("All");
-  const [sortOption] = useState("Default");
+  const [sortOption, setSortOption] = useState("Default");
 
   const { data, isLoading, error } = useQuery({
     queryKey: ["products"],
@@ -66,21 +66,41 @@ const Shop = () => {
 
       <div className="container mx-auto px-6 py-12">
         <div className="flex flex-col gap-12">
-          {/* Category Filter */}
-          <div className="flex flex-wrap justify-center gap-4 mb-8">
-            {categories.map((category) => (
-              <button
-                key={category}
-                onClick={() => setSelectedCategory(category)}
-                className={`px-6 py-2 rounded-full text-sm uppercase tracking-wider transition-all duration-300 ${
-                  selectedCategory === category
-                    ? "bg-gray-900 text-white shadow-lg scale-105"
-                    : "bg-white text-gray-500 hover:bg-gray-100 border border-gray-200"
-                }`}
+          {/* Filters & Sort */}
+          <div className="flex flex-col md:flex-row justify-between items-center gap-6 mb-8">
+             {/* Category Filter */}
+            <div className="flex flex-wrap justify-center gap-4">
+              {categories.map((category) => (
+                <button
+                  key={category}
+                  onClick={() => setSelectedCategory(category)}
+                  className={`px-6 py-2 rounded-full text-sm uppercase tracking-wider transition-all duration-300 ${
+                    selectedCategory === category
+                      ? "bg-gray-900 text-white shadow-lg scale-105"
+                      : "bg-white text-gray-500 hover:bg-gray-100 border border-gray-200"
+                  }`}
+                >
+                  {category}
+                </button>
+              ))}
+            </div>
+            
+            {/* Sort Dropdown */}
+            <div className="relative">
+              <select
+                value={sortOption}
+                onChange={(e) => setSortOption(e.target.value)}
+                className="appearance-none bg-white border border-gray-200 text-gray-700 py-3 px-6 pr-8 rounded-full leading-tight focus:outline-none focus:bg-white focus:border-gray-500 text-sm uppercase tracking-wider cursor-pointer hover:bg-gray-50 transition-colors"
+                style={{ backgroundImage: "none" }} // Remove default arrow in some browsers if needed, but appearance-none handles most
               >
-                {category}
-              </button>
-            ))}
+                <option value="Default">Default Sorting</option>
+                <option value="Price: Low to High">Price: Low to High</option>
+                <option value="Price: High to Low">Price: High to Low</option>
+              </select>
+               <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
+                  <svg className="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z"/></svg>
+                </div>
+            </div>
           </div>
 
           {/* Product Grid - Full Width */}

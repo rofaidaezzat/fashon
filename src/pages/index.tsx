@@ -5,6 +5,10 @@ import { useQuery } from "@tanstack/react-query";
 import { getProducts } from "../api/products";
 
 import ProductCard from "../Components/ProductCard";
+import styleInspo1 from "../assets/photo_2026-01-14_14-28-22.jpg";
+import styleInspo2 from "../assets/photo_2026-01-14_14-29-04.jpg";
+import styleInspo3 from "../assets/photo_2026-01-14_14-29-42.jpg";
+import saleModel from "../assets/photo_2026-01-14_14-46-49.jpg";
 
 export default function Home() {
   const { data, isLoading } = useQuery({
@@ -77,9 +81,9 @@ export default function Home() {
         <div className="container mx-auto px-6">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {[
-              "src/assets/photo_2026-01-14_14-28-22.jpg",
-              "src/assets/photo_2026-01-14_14-29-04.jpg",
-              "src/assets/photo_2026-01-14_14-29-42.jpg",
+              styleInspo1,
+              styleInspo2,
+              styleInspo3,
             ].map((img, i) => (
               <div
                 key={i}
@@ -178,7 +182,7 @@ export default function Home() {
             <div className="md:w-1/2 relative">
               <div className="relative z-10">
                 <img
-                  src="src/assets/photo_2026-01-14_14-46-49.jpg"
+                  src={saleModel}
                   alt="Sale Model"
                   className="w-full max-w-md mx-auto rounded-2xl shadow-2xl border-4 border-white/10"
                 />
