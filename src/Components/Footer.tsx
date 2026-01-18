@@ -99,7 +99,7 @@ const Footer = () => {
               <li className="flex items-start space-x-3 text-gray-400 text-sm">
                 <MapPin className="w-5 h-5 text-rose-500 flex-shrink-0 mt-0.5" />
                 <span>
-                  123 Fashion Avenue, <br /> New Cairo, Egypt
+                  123 حدائق الاهرام الضغط العالي اعلى مطعم الطباخ
                 </span>
               </li>
               <li className="flex items-center space-x-3 text-gray-400 text-sm">
@@ -108,16 +108,16 @@ const Footer = () => {
                   href="mailto:info@fashon.com"
                   className="hover:text-white transition-colors"
                 >
-                  info@fashon.com
+                  fatmakhalid488@gmail.com
                 </a>
               </li>
               <li className="flex items-center space-x-3 text-gray-400 text-sm">
                 <Phone className="w-5 h-5 text-rose-500 flex-shrink-0" />
                 <a
-                  href="tel:+201234567890"
+                  href="tel:+201034511777"
                   className="hover:text-white transition-colors"
                 >
-                  +20 123 456 7890
+                  +20 1034511777
                 </a>
               </li>
             </ul>

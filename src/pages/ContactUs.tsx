@@ -81,8 +81,7 @@ const ContactUs = () => {
                   <h3 className="font-semibold text-lg">Office</h3>
                   <p className="text-gray-400">
                    123 حدائق الاهرام الضغط العالي اعلى مطعم الطباخ
-                    <br />
-                    New Cairo, Egypt
+                   
                   </p>
                 </div>
               </div>

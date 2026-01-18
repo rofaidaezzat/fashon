@@ -1,30 +1,11 @@
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
-import { Star, Mail, CheckCircle, ArrowRight, ShoppingBag, TrendingUp } from "lucide-react";
+import { Mail, CheckCircle, ArrowRight, TrendingUp } from "lucide-react";
+import { useQuery } from "@tanstack/react-query";
+import { getProducts } from "../api/products";
 
-const featuredProducts = [
-  {
-    id: 1,
-    title: "Classic Beige Trench",
-    category: "Outerwear",
-    price: "EGP 1,290",
-    image: "https://images.unsplash.com/photo-1591047139829-d91aecb6caea?w=600&h=800&fit=crop",
-  },
-  {
-    id: 2,
-    title: "Abstract Print Dress",
-    category: "Dresses",
-    price: "EGP 850",
-    image: "https://images.unsplash.com/photo-1572804013309-59a88b7e92f1?w=600&h=800&fit=crop",
-  },
-  {
-    id: 3,
-    title: "Urban Chic Blazer",
-    category: "Jackets",
-    price: "EGP 1,500",
-    image: "https://images.unsplash.com/photo-1581044777550-4cfa60707c03?w=800&fit=crop",
-  },
-];
+
+import ProductCard from "../Components/ProductCard";
 
 const testimonials = [
   {
@@ -51,6 +32,15 @@ const testimonials = [
 ];
 
 export default function Home() {
+  const { data, isLoading } = useQuery({
+    queryKey: ["products"],
+    queryFn: getProducts,
+  });
+
+  const products = data?.data?.slice(0, 3) || [];
+
+  if (isLoading) return <div className="min-h-screen flex items-center justify-center">Loading...</div>;
+
   return (
     <main className="min-h-screen bg-white font-sans text-gray-900">
       {/* Hero Section */}
@@ -132,41 +122,14 @@ export default function Home() {
             </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {featuredProducts.map((product) => (
+            {products.map((product) => (
               <motion.div
-                key={product.id}
+                key={product._id}
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
-                className="group bg-white rounded-none border border-transparent hover:shadow-xl transition-all duration-300"
               >
-                <div className="relative aspect-[3/4] overflow-hidden bg-gray-200">
-                  <img
-                    src={product.image}
-                    alt={product.title}
-                    className="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-500"
-                  />
-                  
-                  {/* Hover Overlay Actions */}
-                   <div className="absolute inset-x-0 bottom-4 flex justify-center gap-3 opacity-0 group-hover:opacity-100 transform translate-y-4 group-hover:translate-y-0 transition-all duration-300">
-                      <button className="bg-rose-500 text-white px-6 py-2 rounded-full text-sm font-medium hover:bg-rose-600 shadow-md flex items-center gap-2">
-                         <ShoppingBag className="w-4 h-4" /> Add to Cart
-                      </button>
-                      <button className="bg-white text-rose-500 p-2 rounded-full shadow-md hover:bg-gray-50" title="Quick View">
-                         <CheckCircle className="w-4 h-4" /> {/* Using CheckCircle as generic icon for now, usually Eye */}
-                      </button>
-                  </div>
-                </div>
-                
-                <div className="p-6 text-center">
-                  <h3 className="text-lg font-medium text-gray-900 mb-1">
-                    {product.title}
-                  </h3>
-                   <p className="text-sm text-gray-500 mb-3 uppercase tracking-wide">{product.category}</p>
-                   <p className="text-xl font-bold text-rose-600">
-                      {product.price}
-                    </p>
-                </div>
+               <ProductCard product={product} />
               </motion.div>
             ))}
           </div>
@@ -239,52 +202,7 @@ export default function Home() {
           </div>
       </section>
 
-      {/* Video Stories / Reels Section */}
-      <section className="py-20 bg-gray-50 overflow-hidden">
-        <div className="container mx-auto px-6">
-           <div className="text-center mb-12">
-              <h2 className="text-3xl font-bold text-gray-900 mb-2">Shop The Look</h2>
-              <p className="text-gray-500">See our products in action</p>
-           </div>
-           
-           {/* Horizontal Scroll Layout */}
-           <div className="flex gap-6 overflow-x-auto pb-8 snap-x snap-mandatory scrollbar-hide">
-              {[
-                  { id: 1, poster: "https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?w=600&h=1066&fit=crop", vid: "#" },
-                  { id: 2, poster: "https://images.unsplash.com/photo-1496747611176-843222e1e57c?w=600&h=1066&fit=crop", vid: "#" },
-                  { id: 3, poster: "https://images.unsplash.com/photo-1529139574466-a302c27e3844?w=600&h=1066&fit=crop", vid: "#" },
-                  { id: 4, poster: "https://images.unsplash.com/photo-1509631179647-0177331693ae?w=600&h=1066&fit=crop", vid: "#" },
-                  { id: 5, poster: "https://images.unsplash.com/photo-1552374196-1ab2a1c593e8?w=600&h=1066&fit=crop", vid: "#" },
-              ].map((item) => (
-                  <div key={item.id} className="min-w-[280px] md:min-w-[320px] h-[500px] md:h-[600px] relative rounded-3xl overflow-hidden snap-center group shadow-xl">
-                      {/* Video/Image Placeholder - In a real app, use <video> tag here */}
-                      <img 
-                          src={item.poster} 
-                          alt="Fashion Reel"
-                          className="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-700" 
-                       />
-                       
-                       {/* Overlay Gradient */}
-                       <div className="absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-black/60 to-transparent"></div>
-
-                       {/* Shop Button */}
-                       <div className="absolute bottom-8 left-0 right-0 flex justify-center transform translate-y-2 group-hover:translate-y-0 transition-transform duration-300">
-                           <Link to="/shop">
-                                <button className="bg-white/90 backdrop-blur-sm text-gray-900 px-8 py-3 rounded-full font-bold text-sm hover:bg-white shadow-lg transition-all duration-300 flex items-center gap-2">
-                                     Shop Now <ArrowRight className="w-4 h-4" />
-                                </button>
-                           </Link>
-                       </div>
-                       
-                       {/* Play Icon Overlay (Decorative) */}
-                       <div className="absolute top-4 right-4 bg-black/20 backdrop-blur-md p-2 rounded-full">
-                           <svg className="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
-                       </div>
-                  </div>
-              ))}
-           </div>
-        </div>
-      </section>
+    
 
       {/* Features / Benefits */}
       <section className="py-24 bg-white border-y border-gray-100">

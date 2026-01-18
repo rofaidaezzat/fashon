@@ -8,7 +8,7 @@ export interface ContactMessage {
 }
 
 const sendContactMessage = async (data: ContactMessage) => {
-    const response = await axiosInstance.post("/api/v1/contact-us", data);
+    const response = await axiosInstance.post("api/v1/contact-us", data);
     return response.data;
 };
 
