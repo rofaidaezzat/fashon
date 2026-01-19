@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
-import { Mail, CheckCircle, ArrowRight, TrendingUp } from "lucide-react";
+import { Mail, CheckCircle, TrendingUp } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 import { getProducts } from "../api/products";
 
