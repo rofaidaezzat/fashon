@@ -32,7 +32,7 @@ const Navbar = () => {
             <img
               src={logo}
               alt="Fashon Logo"
-              className="h-12 w-auto object-contain"
+              className="h-14 w-auto object-contain"
             />
           </Link>
 
@@ -61,17 +61,29 @@ const Navbar = () => {
             </button>
           </div>
 
-          {/* Mobile Menu Button */}
-          <button
-            onClick={() => setIsMenuOpen(!isMenuOpen)}
-            className="md:hidden p-2 rounded-lg text-gray-600 hover:bg-gray-100 transition-colors"
-          >
-            {isMenuOpen ? (
-              <X className="w-6 h-6" />
-            ) : (
-              <Menu className="w-6 h-6" />
-            )}
-          </button>
+          {/* Mobile Actions */}
+          <div className="flex items-center gap-4 md:hidden">
+            <button onClick={() => setIsCartOpen(true)} className="relative group p-2">
+              <ShoppingBag className="w-6 h-6 text-gray-800 transition-colors" />
+              {cartCount > 0 && (
+                <span className="absolute top-0 right-0 bg-rose-500 text-white text-[10px] font-bold w-4 h-4 flex items-center justify-center rounded-full">
+                  {cartCount}
+                </span>
+              )}
+            </button>
+            
+            {/* Mobile Menu Button */}
+            <button
+              onClick={() => setIsMenuOpen(!isMenuOpen)}
+              className="p-2 rounded-lg text-gray-600 hover:bg-gray-100 transition-colors"
+            >
+              {isMenuOpen ? (
+                <X className="w-6 h-6" />
+              ) : (
+                <Menu className="w-6 h-6" />
+              )}
+            </button>
+          </div>
         </div>
 
         {/* Mobile Navigation */}
@@ -91,15 +103,6 @@ const Navbar = () => {
                 {link.name}
               </Link>
             ))}
-            <button
-              onClick={() => {
-                setIsMenuOpen(false);
-                setIsCartOpen(true);
-              }}
-              className="w-full text-left block py-3 px-4 rounded-xl font-medium text-gray-600 hover:bg-gray-50"
-            >
-              My Cart ({cartCount})
-            </button>
           </div>
         )}
 
