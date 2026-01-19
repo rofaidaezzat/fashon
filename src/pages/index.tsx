@@ -9,6 +9,7 @@ import styleInspo1 from "../assets/photo_2026-01-14_14-28-22.jpg";
 import styleInspo2 from "../assets/photo_2026-01-14_14-29-04.jpg";
 import styleInspo3 from "../assets/photo_2026-01-14_14-29-42.jpg";
 import saleModel from "../assets/photo_2026-01-14_14-46-49.jpg";
+import HeroSection from "../Components/HeroSection";
 
 export default function Home() {
   const { data, isLoading } = useQuery({
@@ -28,53 +29,7 @@ export default function Home() {
   return (
     <main className="min-h-screen bg-white font-sans text-gray-900">
       {/* Hero Section */}
-      <section className="relative h-[90vh] flex items-center overflow-hidden">
-        <div className="absolute inset-0 z-0">
-          <img
-            src="https://images.unsplash.com/photo-1490481651871-ab68de25d43d?q=80&w=2070&auto=format&fit=crop"
-            alt="Fashion Hero"
-            className="w-full h-full object-cover"
-          />
-          <div className="absolute inset-0 bg-black/30"></div>
-        </div>
-
-        <div className="container mx-auto px-6 relative z-10 text-center md:text-left">
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
-            className="max-w-3xl"
-          >
-            <span className="inline-block py-1 px-3 rounded-full bg-white/20 backdrop-blur-md text-white text-sm font-semibold mb-6 uppercase tracking-widest border border-white/30">
-              New Collection 2026
-            </span>
-            <h1 className="text-5xl md:text-7xl font-bold text-white mb-6 leading-tight">
-              Elegance is not <br />
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-rose-200 to-pink-200">
-                standing out,
-              </span>
-              <br />
-              but being remembered.
-            </h1>
-
-            <p className="text-xl text-gray-200 max-w-lg mb-10 leading-relaxed">
-              Discover our curated selection of timeless pieces designed to
-              express your unique style with confidence.
-            </p>
-
-            <div className="flex flex-col sm:flex-row items-center gap-4">
-              <Link to="/shop">
-                <button className="px-10 py-4 rounded-full bg-white text-gray-900 font-bold hover:bg-rose-50 transition-all duration-300 flex items-center gap-2 shadow-lg hover:shadow-xl hover:-translate-y-1">
-                  Shop Now <ArrowRight className="w-5 h-5" />
-                </button>
-              </Link>
-              <button className="px-10 py-4 rounded-full bg-transparent border-2 border-white text-white font-bold hover:bg-white/10 transition-all duration-300">
-                View Lookbook
-              </button>
-            </div>
-          </motion.div>
-        </div>
-      </section>
+      <HeroSection />
 
       {/* Style Inspo Section (Image 1) */}
       <section className="py-20 bg-white">

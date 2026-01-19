@@ -1,13 +1,17 @@
 import { useParams, Link } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { getProductById } from "../api/products";
-import { ArrowLeft, ShoppingBag } from "lucide-react";
-import { useState } from "react";
+import { ArrowLeft, ShoppingCart, Minus, Plus } from "lucide-react";
+import { useState, useEffect } from "react";
+import { useDispatch } from "react-redux";
+import { addToCart } from "../store/cartSlice";
 
 export default function ProductDetails() {
   const { id } = useParams<{ id: string }>();
   const [selectedSize, setSelectedSize] = useState<string>("");
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
+  const [quantity, setQuantity] = useState(1);
+  const dispatch = useDispatch();
 
   const { data, isLoading, isError } = useQuery({
     queryKey: ["product", id],
@@ -17,15 +21,30 @@ export default function ProductDetails() {
 
   const product = data?.data;
 
-  const handleBuyOnWhatsApp = () => {
+  // Auto-select first size
+  useEffect(() => {
+    if (product?.sizes && product.sizes.length > 0 && !selectedSize) {
+      const availableSizes = product.sizes
+        .flatMap((s) => s.split(",").map((i) => i.trim()))
+        .filter(Boolean);
+      
+      if (availableSizes.length > 0) {
+        setSelectedSize(availableSizes[0]);
+      }
+    }
+  }, [product, selectedSize]);
+
+  const [isAdded, setIsAdded] = useState(false);
+
+  const handleAddToCart = () => {
     if (!product) return;
-    const phoneNumber = "201034511777";
-    const message = encodeURIComponent(
-      `Hello, I would like to order: ${product.name} - EGP ${product.price}${
-        selectedSize ? ` (Size: ${selectedSize})` : ""
-      }`
-    );
-    window.open(`https://wa.me/${phoneNumber}?text=${message}`, "_blank");
+    dispatch(addToCart({ product, quantity, selectedSize }));
+    setIsAdded(true);
+    setTimeout(() => setIsAdded(false), 2000);
+  };
+
+  const handleQuantityChange = (delta: number) => {
+    setQuantity(prev => Math.max(1, prev + delta));
   };
 
   if (isLoading) {
@@ -117,47 +136,82 @@ export default function ProductDetails() {
                 </p>
 
                 {product.sizes && product.sizes.length > 0 && (
-                  <div className="mb-8">
+                <div className="mb-8">
                     <h3 className="text-sm font-bold text-gray-900 uppercase tracking-wider mb-4">
                       Select Size
                     </h3>
                     <div className="flex flex-wrap gap-3">
-                      {product.sizes.map((size) => (
-                        <button
-                          key={size}
-                          onClick={() => setSelectedSize(size)}
-                          className={`min-w-[3rem] h-12 flex items-center justify-center rounded-lg border-2 font-bold transition-all ${
-                            selectedSize === size
-                              ? "border-gray-900 bg-gray-900 text-white"
-                              : "border-gray-200 text-gray-900 hover:border-gray-400"
-                          }`}
-                        >
-                          {size}
-                        </button>
-                      ))}
+                      {product.sizes
+                        .flatMap((s) => s.split(",").map((i) => i.trim()))
+                        .filter(Boolean)
+                        .map((size) => (
+                          <button
+                            key={size}
+                            onClick={() => setSelectedSize(size)}
+                            className={`min-w-[3rem] h-12 px-4 flex items-center justify-center rounded-lg border text-sm font-medium transition-all duration-200 ${
+                              selectedSize === size
+                                ? "border-gray-900 bg-gray-900 text-white shadow-md transform scale-105"
+                                : "border-gray-200 text-gray-700 hover:border-gray-900 hover:text-gray-900 bg-white"
+                            }`}
+                          >
+                            {size.toUpperCase()}
+                          </button>
+                        ))}
                     </div>
                   </div>
                 )}
               </div>
 
+              {/* Quantity Selector */}
+              <div className="mb-8">
+                <h3 className="text-sm font-bold text-gray-900 uppercase tracking-wider mb-4">
+                  Quantity
+                </h3>
+                <div className="flex items-center gap-4">
+                  <button
+                    onClick={() => handleQuantityChange(-1)}
+                    className="p-2 rounded-full border border-gray-200 hover:bg-gray-100 transition-colors"
+                  >
+                    <Minus className="w-4 h-4" />
+                  </button>
+                  <span className="text-xl font-bold w-8 text-center">{quantity}</span>
+                  <button
+                    onClick={() => handleQuantityChange(1)}
+                    className="p-2 rounded-full border border-gray-200 hover:bg-gray-100 transition-colors"
+                  >
+                    <Plus className="w-4 h-4" />
+                  </button>
+                </div>
+              </div>
+
               <div className="border-t border-gray-100 pt-8 mt-8">
                 <button
-                  onClick={handleBuyOnWhatsApp}
+                  onClick={handleAddToCart}
                   disabled={
-                    product.sizes &&
+                    (product.sizes &&
                     product.sizes.length > 0 &&
-                    !selectedSize
+                    !selectedSize) || isAdded
                   }
                   className={`w-full py-4 rounded-full text-white font-bold text-lg flex items-center justify-center gap-3 transition-all ${
                     product.sizes &&
                     product.sizes.length > 0 &&
                     !selectedSize
                       ? "bg-gray-300 cursor-not-allowed"
-                      : "bg-gray-900 hover:bg-rose-600 shadow-lg hover:shadow-xl hover:-translate-y-1"
+                      : isAdded 
+                        ? "bg-green-600 shadow-none scale-95"
+                        : "bg-gray-900 hover:bg-rose-600 shadow-lg hover:shadow-xl hover:-translate-y-1"
                   }`}
                 >
-                  <ShoppingBag className="w-6 h-6" />
-                  Buy on WhatsApp
+                  {isAdded ? (
+                    <>
+                      <span>Added to Cart!</span>
+                    </>
+                  ) : (
+                    <>
+                      <ShoppingCart className="w-6 h-6" />
+                      Add to Cart
+                    </>
+                  )}
                 </button>
                 {product.sizes &&
                   product.sizes.length > 0 &&

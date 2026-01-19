@@ -1,7 +1,9 @@
 import { useState } from "react";
-import { Eye, ShoppingBag, ChevronLeft, ChevronRight } from "lucide-react";
+import { Eye, ShoppingCart, ChevronLeft, ChevronRight } from "lucide-react";
 import { type IProduct } from "../api/products";
 import { Link } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { addToCart } from "../store/cartSlice";
 
 interface ProductCardProps {
     product: IProduct;
@@ -9,11 +11,13 @@ interface ProductCardProps {
 
 const ProductCard = ({ product }: ProductCardProps) => {
     const [currentImageIndex, setCurrentImageIndex] = useState(0);
+    const [isAdded, setIsAdded] = useState(false);
+    const dispatch = useDispatch();
 
-    const handleBuyOnWhatsApp = () => {
-        const phoneNumber = "201034511777";
-        const message = encodeURIComponent(`Hello, I would like to order: ${product.name} - EGP ${product.price}`);
-        window.open(`https://wa.me/${phoneNumber}?text=${message}`, '_blank');
+    const handleAddToCart = () => {
+        dispatch(addToCart({ product }));
+        setIsAdded(true);
+        setTimeout(() => setIsAdded(false), 2000);
     };
 
     const nextImage = (e: React.MouseEvent) => {
@@ -77,11 +81,16 @@ const ProductCard = ({ product }: ProductCardProps) => {
                         </button>
                     </Link>
                     <button
-                        onClick={handleBuyOnWhatsApp}
-                        className="bg-white text-gray-900 p-3 rounded-full hover:bg-green-500 hover:text-white transition-colors transform translate-y-4 group-hover:translate-y-0 duration-300 delay-75 pointer-events-auto"
-                        title="Buy on WhatsApp"
+                        onClick={handleAddToCart}
+                        disabled={isAdded}
+                        className={`p-3 rounded-full transition-all transform translate-y-4 group-hover:translate-y-0 duration-300 delay-75 pointer-events-auto ${
+                            isAdded 
+                            ? "bg-green-500 text-white" 
+                            : "bg-white text-gray-900 hover:bg-green-500 hover:text-white"
+                        }`}
+                        title="Add to Cart"
                     >
-                        <ShoppingBag className="w-5 h-5" />
+                        <ShoppingCart className="w-5 h-5" />
                     </button>
                 </div>
             </div>
@@ -97,10 +106,15 @@ const ProductCard = ({ product }: ProductCardProps) => {
                     </span>
                 </div>
                 <button
-                    onClick={handleBuyOnWhatsApp}
-                    className="w-full mt-4 bg-gray-900 text-white py-2.5 rounded-lg text-sm font-medium hover:bg-rose-600 transition-colors flex items-center justify-center gap-2"
+                    onClick={handleAddToCart}
+                    disabled={isAdded}
+                    className={`w-full mt-4 py-2.5 rounded-lg text-sm font-medium transition-colors flex items-center justify-center gap-2 ${
+                        isAdded 
+                        ? "bg-green-600 text-white" 
+                        : "bg-gray-900 text-white hover:bg-rose-600"
+                    }`}
                 >
-                    Buy Now
+                    {isAdded ? "Added!" : "Add to Cart"}
                 </button>
             </div>
         </div>

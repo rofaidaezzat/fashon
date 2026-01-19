@@ -1,11 +1,18 @@
 import { Link, useLocation } from "react-router-dom";
-import { Menu, X } from "lucide-react";
+import { Menu, X, ShoppingBag } from "lucide-react";
 import { useState } from "react";
 import logo from "../assets/logo.png";
+import { useSelector } from "react-redux";
+import { type RootState } from "../store/store";
+import CartDrawer from "./CartDrawer";
 
 const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isCartOpen, setIsCartOpen] = useState(false);
   const location = useLocation();
+  const cartItems = useSelector((state: RootState) => state.cart.items);
+  const safeCartItems = Array.isArray(cartItems) ? cartItems : [];
+  const cartCount = safeCartItems.reduce((acc, item) => acc + item.quantity, 0);
 
   const navLinks = [
     { name: "Home", path: "/" },
@@ -42,6 +49,16 @@ const Navbar = () => {
                 {link.name}
               </Link>
             ))}
+            
+            {/* Desktop Cart */}
+            <button onClick={() => setIsCartOpen(true)} className="relative group p-2">
+              <ShoppingBag className="w-6 h-6 text-gray-800 group-hover:text-rose-500 transition-colors" />
+              {cartCount > 0 && (
+                <span className="absolute top-0 right-0 bg-rose-500 text-white text-[10px] font-bold w-4 h-4 flex items-center justify-center rounded-full">
+                  {cartCount}
+                </span>
+              )}
+            </button>
           </div>
 
           {/* Mobile Menu Button */}
@@ -74,15 +91,19 @@ const Navbar = () => {
                 {link.name}
               </Link>
             ))}
-            <Link
-              to="/shop"
-              onClick={() => setIsMenuOpen(false)}
-              className="block py-3 px-4 rounded-xl font-medium text-gray-600 hover:bg-gray-50"
+            <button
+              onClick={() => {
+                setIsMenuOpen(false);
+                setIsCartOpen(true);
+              }}
+              className="w-full text-left block py-3 px-4 rounded-xl font-medium text-gray-600 hover:bg-gray-50"
             >
-              My Cart (0)
-            </Link>
+              My Cart ({cartCount})
+            </button>
           </div>
         )}
+
+        <CartDrawer isOpen={isCartOpen} onClose={() => setIsCartOpen(false)} />
       </div>
 
       <style>{`
