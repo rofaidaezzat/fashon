@@ -8,7 +8,7 @@ import {
   Phone,
   MapPin,
 } from "lucide-react";
-import logo from "../assets/logo.png";
+import logo from "../assets/photo_2026-01-21_18-13-45.jpg";
 import ImageWithFallback from "./ImageWithFallback";
 import { useLanguage } from "../context/LanguageContext";
 
