@@ -135,9 +135,7 @@ export default function Home() {
                 </div>
               </div>
 
-              <button className="bg-white text-gray-900 px-8 py-4 rounded-full font-bold hover:bg-rose-500 hover:text-white transition-all duration-300 shadow-lg hover:shadow-rose-500/50">
-                Shop The Sale
-              </button>
+             
             </div>
             <div className="md:w-1/2 relative">
               <div className="relative z-10">
