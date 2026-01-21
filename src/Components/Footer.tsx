@@ -10,9 +10,11 @@ import {
 } from "lucide-react";
 import logo from "../assets/logo.png";
 import ImageWithFallback from "./ImageWithFallback";
+import { useLanguage } from "../context/LanguageContext";
 
 const Footer = () => {
   const currentYear = new Date().getFullYear();
+  const { t } = useLanguage();
 
   return (
     <footer className="bg-gray-900 text-white pt-16 pb-8 border-t border-gray-800">
@@ -20,7 +22,7 @@ const Footer = () => {
         <div className="grid grid-cols-1 md:grid-cols-4 gap-12 mb-12">
           {/* Brand Section */}
           <div className="space-y-6">
-            <Link to="/" className="flex items-center space-x-2 group">
+            <Link to="/" className="flex items-center gap-2 group">
                {/* Use text logo if image doesn't look good on dark bg, or tint it. 
                    Assuming the logo is the one from Navbar. Ideally should have a white version.
                    For now, let's use text or a container for the logo. */}
@@ -30,10 +32,10 @@ const Footer = () => {
                <span className="text-2xl font-bold tracking-tight text-white">FZ DESIGNER</span>
             </Link>
             <p className="text-gray-400 text-sm leading-relaxed max-w-xs">
-              Elegance is not standing out, but being remembered. Discover timeless fashion that expresses your unique style.
+              {t.footer.description}
             </p>
             {/* Social Media */}
-            <div className="flex space-x-4">
+            <div className="flex gap-4">
               {[Facebook, Twitter, Instagram, Linkedin].map((Icon, index) => (
                 <a
                   key={index}
@@ -49,19 +51,19 @@ const Footer = () => {
 
           {/* Quick Links */}
           <div>
-            <h3 className="text-lg font-bold mb-6 text-white uppercase tracking-wider text-sm">Explore</h3>
+            <h3 className="text-lg font-bold mb-6 text-white uppercase tracking-wider text-sm">{t.footer.explore}</h3>
             <ul className="space-y-3">
               {[
-                { name: "Home", path: "/" },
-                { name: "Shop Collection", path: "/shop" },
-                { name: "About Us", path: "/about-us" },
+                { name: t.footer.links.home, path: "/" },
+                { name: t.footer.links.shop, path: "/shop" },
+                { name: t.footer.links.about, path: "/about-us" },
               ].map((link) => (
                 <li key={link.name}>
                   <Link
                     to={link.path}
                     className="text-gray-400 hover:text-rose-500 transition-colors duration-200 text-sm flex items-center group"
                   >
-                   <span className="w-0 group-hover:w-1.5 h-0.5 bg-rose-500 mr-0 group-hover:mr-2 transition-all duration-300"></span>
+                   <span className="w-0 group-hover:w-1.5 h-0.5 bg-rose-500 me-0 group-hover:me-2 transition-all duration-300"></span>
                     {link.name}
                   </Link>
                 </li>
@@ -71,18 +73,18 @@ const Footer = () => {
 
           {/* Help */}
           <div>
-            <h3 className="text-lg font-bold mb-6 text-white uppercase tracking-wider text-sm">Customer Care</h3>
+            <h3 className="text-lg font-bold mb-6 text-white uppercase tracking-wider text-sm">{t.footer.customer_care}</h3>
             <ul className="space-y-3">
                {[
-                { name: "My Cart", path: "/order" },
-                { name: "Contact Us", path: "/contact-us" },
+                { name: t.footer.links.cart, path: "/order" },
+                { name: t.footer.links.contact, path: "/contact-us" },
               ].map((link) => (
                 <li key={link.name}>
                   <Link
                     to={link.path}
                     className="text-gray-400 hover:text-rose-500 transition-colors duration-200 text-sm flex items-center group"
                   >
-                    <span className="w-0 group-hover:w-1.5 h-0.5 bg-rose-500 mr-0 group-hover:mr-2 transition-all duration-300"></span>
+                    <span className="w-0 group-hover:w-1.5 h-0.5 bg-rose-500 me-0 group-hover:me-2 transition-all duration-300"></span>
                     {link.name}
                   </Link>
                 </li>
@@ -92,30 +94,31 @@ const Footer = () => {
 
           {/* Contact Info */}
           <div>
-            <h3 className="text-lg font-bold mb-6 text-white uppercase tracking-wider text-sm">Contact Us</h3>
+            <h3 className="text-lg font-bold mb-6 text-white uppercase tracking-wider text-sm">{t.footer.contact_us}</h3>
             <ul className="space-y-4">
-              <li className="flex items-start space-x-3 text-gray-400 text-sm">
+              <li className="flex items-start gap-3 text-gray-400 text-sm">
                 <MapPin className="w-5 h-5 text-rose-500 flex-shrink-0 mt-0.5" />
                 <span>
-                  123 حدائق الاهرام الضغط العالي اعلى مطعم الطباخ
+                  {t.contact.office_address}
                 </span>
               </li>
-              <li className="flex items-center space-x-3 text-gray-400 text-sm">
+              <li className="flex items-center gap-3 text-gray-400 text-sm">
                 <Mail className="w-5 h-5 text-rose-500 flex-shrink-0" />
                 <a
-                  href="mailto:info@fashon.com"
+                  href={`mailto:${t.contact.email_value}`}
                   className="hover:text-white transition-colors"
                 >
-                  fatmakhalid488@gmail.com
+                  {t.contact.email_value}
                 </a>
               </li>
-              <li className="flex items-center space-x-3 text-gray-400 text-sm">
+              <li className="flex items-center gap-3 text-gray-400 text-sm">
                 <Phone className="w-5 h-5 text-rose-500 flex-shrink-0" />
                 <a
-                  href="tel:+201034511777"
+                  href={`tel:${t.contact.phone_number}`}
                   className="hover:text-white transition-colors"
+                  dir="ltr"
                 >
-                  +20 1034511777
+                  {t.contact.phone_number}
                 </a>
               </li>
             </ul>
@@ -125,11 +128,11 @@ const Footer = () => {
         {/* Bottom Bar */}
         <div className="border-t border-gray-800 pt-8 flex flex-col md:flex-row justify-between items-center text-sm text-gray-500">
           <p>
-            © {currentYear} Rosira. All rights reserved.
+            {t.footer.rights}
           </p>
-          <div className="flex items-center space-x-6 mt-4 md:mt-0">
-             <a href="#" className="hover:text-white transition-colors">Privacy Policy</a>
-             <a href="#" className="hover:text-white transition-colors">Terms of Service</a>
+          <div className="flex items-center gap-6 mt-4 md:mt-0">
+             <a href="#" className="hover:text-white transition-colors">{t.footer.privacy}</a>
+             <a href="#" className="hover:text-white transition-colors">{t.footer.terms}</a>
           </div>
         </div>
       </div>

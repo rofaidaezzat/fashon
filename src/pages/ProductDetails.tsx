@@ -7,8 +7,10 @@ import { useDispatch } from "react-redux";
 import { addToCart } from "../store/cartSlice";
 import ImageWithFallback from "../Components/ImageWithFallback";
 import sizeGuideImage from "../assets/photo_2026-01-21_16-13-32.jpg";
+import { useLanguage } from "../context/LanguageContext";
 
 export default function ProductDetails() {
+  const { t } = useLanguage();
   const { id } = useParams<{ id: string }>();
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [quantity, setQuantity] = useState(1);
@@ -112,13 +114,13 @@ export default function ProductDetails() {
     return (
       <div className="min-h-screen flex flex-col items-center justify-center bg-white">
         <h2 className="text-2xl font-bold text-gray-900 mb-4">
-          Product not found
+          {t.product.not_found}
         </h2>
         <Link
           to="/shop"
           className="text-white bg-gray-900 px-6 py-3 rounded-full hover:bg-gray-800 transition-colors"
         >
-          Back to Shop
+          {t.product.back_to_shop}
         </Link>
       </div>
     );
@@ -131,8 +133,8 @@ export default function ProductDetails() {
           to="/shop"
           className="inline-flex items-center text-gray-600 hover:text-gray-900 mb-8 transition-colors"
         >
-          <ArrowLeft className="w-5 h-5 mr-2" />
-          Back to Shop
+          <ArrowLeft className="w-5 h-5 mr-2 rtl:rotate-180" />
+          {t.product.back_to_shop}
         </Link>
 
         <div className="bg-white rounded-2xl shadow-xl overflow-hidden">
@@ -180,7 +182,7 @@ export default function ProductDetails() {
                     </h1>
                   </div>
                   <span className="text-2xl font-bold text-gray-900 bg-gray-100 px-4 py-2 rounded-lg">
-                    EGP {product.price.toFixed(2)}
+                    {t.product.price} {product.price.toFixed(2)}
                   </span>
                 </div>
 
@@ -191,7 +193,7 @@ export default function ProductDetails() {
                  {/* Quantity Selector - Moved to Top */}
                   <div className="mb-8 p-4 bg-gray-50 rounded-xl border border-gray-100">
                     <h3 className="text-sm font-bold text-gray-900 uppercase tracking-wider mb-4">
-                      Quantity (Items to Purchase)
+                      {t.product.quantity}
                     </h3>
                     <div className="flex items-center gap-4">
                       <button
@@ -215,15 +217,15 @@ export default function ProductDetails() {
                     {selections.map((selection, index) => (
                         <div key={index} className="p-5 border border-gray-200 rounded-xl relative">
 
-                            <div className="absolute -top-3 left-4 bg-white px-2 text-sm font-bold text-rose-500 flex items-center gap-2">
-                                <span>Item #{index + 1}</span>
+                            <div className="absolute -top-3 left-4 rtl:left-auto rtl:right-4 bg-white px-2 text-sm font-bold text-rose-500 flex items-center gap-2">
+                                <span>{t.product.item} #{index + 1}</span>
                             </div>
                             
                             {product.sizes && product.sizes.length > 0 && (
                             <div className="mb-4">
                                 <div className="flex items-center gap-2 mb-2">
                                     <h3 className="text-xs font-bold text-gray-500 uppercase tracking-wider">
-                                    Select Size
+                                    {t.product.select_size}
                                     </h3>
                                     {/* Size Guide Trigger */}
                                     <button
@@ -233,7 +235,7 @@ export default function ProductDetails() {
                                       title="Open Size Guide"
                                     >
                                       <Ruler className="w-4 h-4" />
-                                      <span className="underline decoration-rose-200 underline-offset-2 group-hover:decoration-rose-600 transition-all">Size Guide</span>
+                                      <span className="underline decoration-rose-200 underline-offset-2 group-hover:decoration-rose-600 transition-all">{t.product.size_guide}</span>
                                     </button>
                                 </div>
                                 <div className="flex flex-wrap gap-2">
@@ -260,7 +262,7 @@ export default function ProductDetails() {
                             {product.colors && product.colors.length > 0 && (
                             <div>
                                 <h3 className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">
-                                Select Color
+                                {t.product.select_color}
                                 </h3>
                                 <div className="flex flex-wrap gap-2">
                                 {product.colors.map((color) => (
@@ -299,12 +301,12 @@ export default function ProductDetails() {
                 >
                   {isAdded ? (
                     <>
-                      <span>Added to Cart!</span>
+                      <span>{t.product.added_to_cart}</span>
                     </>
                   ) : (
                     <>
                       <ShoppingCart className="w-6 h-6" />
-                      Add to Cart
+                      {t.product.add_to_cart}
                     </>
                   )}
                 </button>
@@ -318,12 +320,12 @@ export default function ProductDetails() {
                       : "bg-rose-600 hover:bg-rose-700 shadow-md hover:shadow-lg hover:-translate-y-1"
                   }`}
                 >
-                  Buy Now
+                  {t.product.buy_now}
                 </button>
 
                 {!areAllSelectionsComplete() && (
                     <p className="text-rose-500 text-sm mt-3 text-center">
-                      Please select all options for each item to continue
+                      {t.product.select_prompt}
                     </p>
                   )}
               </div>
@@ -336,7 +338,7 @@ export default function ProductDetails() {
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm animate-in fade-in duration-200">
           <div className="relative bg-white rounded-2xl shadow-2xl max-w-4xl w-full max-h-[90vh] overflow-hidden flex flex-col animate-in zoom-in-95 duration-200">
             <div className="flex items-center justify-between p-4 border-b">
-              <h3 className="text-lg font-bold text-gray-900">Size Guide</h3>
+              <h3 className="text-lg font-bold text-gray-900">{t.product.size_guide}</h3>
               <button
                 onClick={() => setShowSizeGuide(false)}
                 className="p-2 hover:bg-gray-100 rounded-full transition-colors"

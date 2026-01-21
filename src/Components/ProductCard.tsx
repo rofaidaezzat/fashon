@@ -5,12 +5,14 @@ import { Link } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { addToCart } from "../store/cartSlice";
 import ImageWithFallback from "./ImageWithFallback";
+import { useLanguage } from "../context/LanguageContext";
 
 interface ProductCardProps {
     product: IProduct;
 }
 
 const ProductCard = ({ product }: ProductCardProps) => {
+    const { t } = useLanguage();
     const [currentImageIndex, setCurrentImageIndex] = useState(0);
     const [isAdded, setIsAdded] = useState(false);
     const dispatch = useDispatch();
@@ -58,13 +60,13 @@ const ProductCard = ({ product }: ProductCardProps) => {
                             onClick={prevImage}
                             className="absolute left-2 top-1/2 -translate-y-1/2 bg-white/80 hover:bg-white text-gray-800 p-2 rounded-full opacity-0 group-hover:opacity-100 transition-all duration-300 z-10"
                         >
-                            <ChevronLeft className="w-5 h-5" />
+                            <ChevronLeft className="w-5 h-5 rtl:rotate-180" />
                         </button>
                         <button 
                             onClick={nextImage}
                             className="absolute right-2 top-1/2 -translate-y-1/2 bg-white/80 hover:bg-white text-gray-800 p-2 rounded-full opacity-0 group-hover:opacity-100 transition-all duration-300 z-10"
                         >
-                            <ChevronRight className="w-5 h-5" />
+                            <ChevronRight className="w-5 h-5 rtl:rotate-180" />
                         </button>
                         
                         {/* Dots Indicator */}
@@ -98,7 +100,7 @@ const ProductCard = ({ product }: ProductCardProps) => {
                             ? "bg-green-500 text-white" 
                             : "bg-white text-gray-900 hover:bg-rose-500 hover:text-white"
                         }`}
-                        title={hasOptions ? "Select Options" : "Add to Cart"}
+                        title={hasOptions ? t.product.select_options : t.product.add_to_cart}
                     >
                         {hasOptions ? <Eye className="w-5 h-5" /> : <ShoppingCart className="w-5 h-5" />}
                     </button>
@@ -112,7 +114,7 @@ const ProductCard = ({ product }: ProductCardProps) => {
                 <p className="text-gray-400 text-sm mb-4">{product.category}</p>
                 <div className="mt-auto flex items-center justify-between">
                     <span className="text-xl font-bold text-gray-900">
-                        EGP {product.price.toFixed(2)}
+                        {t.product.price} {product.price.toFixed(2)}
                     </span>
                 </div>
                 <button
@@ -124,7 +126,7 @@ const ProductCard = ({ product }: ProductCardProps) => {
                         : "bg-gray-900 text-white hover:bg-rose-600"
                     }`}
                 >
-                    {isAdded ? "Added!" : (hasOptions ? "Select Options" : "Add to Cart")}
+                    {isAdded ? t.product.added : (hasOptions ? t.product.select_options : t.product.add_to_cart)}
                 </button>
             </div>
         </div>

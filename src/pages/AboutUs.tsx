@@ -1,7 +1,10 @@
 import { Target, Sparkles, TrendingUp, ShieldCheck, Users } from "lucide-react";
 import ImageWithFallback from "../Components/ImageWithFallback";
+import { useLanguage } from "../context/LanguageContext";
 
 const AboutUs = () => {
+  const { t } = useLanguage();
+
   return (
     <div className="min-h-screen bg-white">
       {/* Hero Section */}
@@ -15,11 +18,10 @@ const AboutUs = () => {
         </div>
         <div className="max-w-6xl mx-auto px-4 text-center relative z-10">
           <h1 className="text-5xl md:text-7xl font-sans font-bold mb-6 tracking-tight">
-            About Fashon
+            {t.about.title}
           </h1>
           <p className="text-xl md:text-2xl text-gray-300 font-light max-w-2xl mx-auto">
-            Redefining elegance for the modern individual through timeless style
-            and contemporary trends.
+            {t.about.subtitle}
           </p>
         </div>
       </div>
@@ -41,32 +43,21 @@ const AboutUs = () => {
           {/* Story Text */}
           <div className="order-1 md:order-2">
             <div className="inline-block bg-rose-50 text-rose-600 px-4 py-2 rounded-full text-sm font-bold uppercase tracking-wider mb-6">
-              Our Story
+              {t.about.our_story}
             </div>
             <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6 leading-tight">
-              Where Style Meets <br />{" "}
-              <span className="text-rose-600">Sophistication</span>
+              {t.about.story_title} <br />{" "}
+              <span className="text-rose-600">{t.about.story_title_highlight}</span>
             </h2>
             <div className="space-y-6 text-gray-600 leading-relaxed text-lg">
               <p>
-                Founded in 2026,{" "}
-                <span className="font-bold text-gray-900">Fashon</span> began
-                with a simple yet ambitious vision: to make high-end fashion
-                accessible without compromising on quality. We started as a
-                small boutique and have grown into a beloved destination for
-                trendsetters across the region.
+                {t.about.story_p1}
               </p>
               <p>
-                We believe that clothing is more than just fabric—it's a form of
-                self-expression. Our curated collections are designed to empower
-                you, boosting your confidence whether you're at the office, a
-                gala, or enjoying a casual weekend.
+                {t.about.story_p2}
               </p>
               <p>
-                From meticulous fabric selection to the final stitch, every
-                piece in our collection tells a story of craftsmanship and
-                passion. We are dedicated to bringing you the latest global
-                trends while ensuring timeless elegance.
+                {t.about.story_p3}
               </p>
             </div>
           </div>
@@ -81,14 +72,11 @@ const AboutUs = () => {
                 <Target className="w-8 h-8 text-rose-500 group-hover:text-white transition-colors duration-300" />
               </div>
               <h3 className="text-3xl font-bold text-gray-900 ml-5">
-                Our Mission
+                {t.about.mission}
               </h3>
             </div>
             <p className="text-gray-600 leading-relaxed text-lg">
-              To inspire confidence and individuality through exceptional
-              fashion. We aim to provide a seamless shopping experience where
-              every customer feels valued and finds pieces that perfectly
-              resonate with their personal style.
+              {t.about.mission_desc}
             </p>
           </div>
 
@@ -99,14 +87,11 @@ const AboutUs = () => {
                 <Sparkles className="w-8 h-8 text-rose-500 group-hover:text-white transition-colors duration-300" />
               </div>
               <h3 className="text-3xl font-bold text-gray-900 ml-5">
-                Our Vision
+                {t.about.vision}
               </h3>
             </div>
             <p className="text-gray-600 leading-relaxed text-lg">
-              To become the leading fashion retailer known for innovation,
-              sustainability, and setting the standard for online shopping. We
-              envision a world where high-quality fashion is inclusive and
-              accessible to all.
+              {t.about.vision_desc}
             </p>
           </div>
         </div>
@@ -115,11 +100,11 @@ const AboutUs = () => {
         <div className="mb-24">
           <div className="text-center mb-16">
             <h3 className="text-4xl font-bold text-gray-900 mb-4">
-              Our Core Values
+              {t.about.values_title}
             </h3>
             <div className="h-1 w-20 bg-rose-500 mx-auto rounded-full"></div>
             <p className="text-gray-500 text-lg mt-4 max-w-2xl mx-auto">
-              The principles that drive our creativity and service
+              {t.about.values_subtitle}
             </p>
           </div>
 
@@ -131,12 +116,10 @@ const AboutUs = () => {
                   <ShieldCheck className="w-8 h-8" />
                 </div>
                 <h4 className="text-xl font-bold text-gray-900 mb-3">
-                  Quality Assurance
+                  {t.about.value_1}
                 </h4>
                 <p className="text-gray-500 leading-relaxed">
-                  We determine to deliver nothing but the best. Every item
-                  undergoes rigorous quality checks to ensure durability and
-                  comfort.
+                  {t.about.value_1_desc}
                 </p>
               </div>
             </div>
@@ -148,12 +131,10 @@ const AboutUs = () => {
                   <TrendingUp className="w-8 h-8" />
                 </div>
                 <h4 className="text-xl font-bold text-gray-900 mb-3">
-                  Trendsetting
+                  {t.about.value_2}
                 </h4>
                 <p className="text-gray-500 leading-relaxed">
-                  Staying ahead of the curve is in our DNA. We constantly scout
-                  global runways to bring the latest trends directly to your
-                  wardrobe.
+                  {t.about.value_2_desc}
                 </p>
               </div>
             </div>
@@ -165,11 +146,10 @@ const AboutUs = () => {
                   <Users className="w-8 h-8" />
                 </div>
                 <h4 className="text-xl font-bold text-gray-900 mb-3">
-                  Customer First
+                  {t.about.value_3}
                 </h4>
                 <p className="text-gray-500 leading-relaxed">
-                  Your satisfaction is our priority. From smooth browsing to
-                  fast delivery and easy returns, we are here for you.
+                  {t.about.value_3_desc}
                 </p>
               </div>
             </div>
@@ -182,10 +162,10 @@ const AboutUs = () => {
             STYLE
           </div>
           <p className="text-3xl text-gray-800 leading-relaxed font-light italic relative z-10 font-serif">
-            "Fashion is the armor to survive the reality of everyday life."
+            "{t.about.quote}"
           </p>
           <p className="text-lg text-rose-600 mt-6 font-bold tracking-widest uppercase relative z-10">
-            — Bill Cunningham
+            {t.about.quote_author}
           </p>
         </div>
       </div>

@@ -1,31 +1,45 @@
-import { motion } from "framer-motion";
-import { ChevronDown } from "lucide-react";
-import heroModel from "@/assets/hero-fashion.png";
+import { motion, AnimatePresence } from "framer-motion";
+import heroImg1 from "@/assets/photo_2026-01-21_17-22-24.jpg";
+import heroImg2 from "@/assets/photo_2026-01-21_17-33-58.jpg";
+import heroImg3 from "@/assets/photo_2026-01-21_17-34-20.jpg";
 import ImageWithFallback from "./ImageWithFallback";
+import { useState, useEffect } from "react";
+import logo from "../assets/logo.png";
+import { useLanguage } from "../context/LanguageContext";
+
+const heroImages = [heroImg1, heroImg2, heroImg3];
 
 const HeroSection = () => {
-  const scrollToProducts = () => {
-    window.scrollTo({ top: window.innerHeight, behavior: "smooth" });
-  };
+  const [currentImageIndex, setCurrentImageIndex] = useState(0);
+  const { t, direction } = useLanguage();
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setCurrentImageIndex((prev) => (prev + 1) % heroImages.length);
+    }, 5000);
+    return () => clearInterval(timer);
+  }, []);
 
   return (
-    <section className="relative min-h-screen w-full overflow-hidden bg-background">
-      {/* Discount Badge */}
-      <motion.div
-        initial={{ opacity: 0, y: -20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 1.2, duration: 0.6 }}
-        className="absolute top-6 right-6 z-20 md:top-8 md:right-12"
-      >
-        <div className="discount-badge rounded-full">
-          Up to 40% Off
-        </div>
-      </motion.div>
+    <section className="relative w-full py-10 px-4 md:px-8 bg-gray-50 flex items-center justify-center min-h-[85vh]">
+      <div className="relative w-full max-w-7xl mx-auto bg-white rounded-[2.5rem] shadow-2xl overflow-hidden flex flex-col lg:flex-row min-h-[60vh]">
+        {/* Discount Badge */}
+        <motion.div
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 1.2, duration: 0.6 }}
+          className={`absolute top-6 ${direction === 'rtl' ? 'left-6 md:left-12' : 'right-6 md:right-12'} z-30 md:top-8`}
+        >
+          <div className="discount-badge rounded-full">
+            {t.hero.discount}
+          </div>
+        </motion.div>
 
-      <div className="mx-auto flex min-h-screen flex-col lg:flex-row">
         {/* Left Content */}
-        <div className="flex flex-1 flex-col justify-center px-6 py-20 md:px-12 lg:px-20 lg:py-0">
-          <div className="max-w-xl">
+        <div className="relative flex flex-1 flex-col justify-center p-8 md:p-12 lg:p-20 overflow-hidden">
+          
+
+          <div className="relative z-10 max-w-xl">
             {/* Eyebrow */}
             <motion.p
               initial={{ opacity: 0, y: 20 }}
@@ -33,7 +47,7 @@ const HeroSection = () => {
               transition={{ delay: 0.2, duration: 0.6 }}
               className="mb-4 font-body text-sm font-medium uppercase tracking-[0.2em] text-warm-gray"
             >
-              New Collection 2026
+              {t.hero.eyebrow}
             </motion.p>
 
             {/* Headline */}
@@ -43,9 +57,9 @@ const HeroSection = () => {
               transition={{ delay: 0.4, duration: 0.8 }}
               className="mb-6 font-display text-5xl font-bold leading-[1.1] tracking-tight text-foreground md:text-6xl lg:text-7xl"
             >
-              Upgrade
+              {t.hero.title_1}
               <br />
-              <span className="italic">Your Style</span>
+              <span className="italic">{t.hero.title_2}</span>
             </motion.h1>
 
             {/* Subheading */}
@@ -55,8 +69,7 @@ const HeroSection = () => {
               transition={{ delay: 0.6, duration: 0.6 }}
               className="mb-10 max-w-md font-body text-lg leading-relaxed text-muted-foreground"
             >
-              Discover timeless pieces crafted with premium quality fabrics. 
-              Modern elegance meets everyday comfort.
+              {t.hero.description}
             </motion.p>
 
             {/* CTAs */}
@@ -67,10 +80,10 @@ const HeroSection = () => {
               className="flex flex-col gap-4 sm:flex-row"
             >
               <button className="btn-gold rounded-sm">
-                Shop Now
+                {t.hero.shop_now}
               </button>
               <button className="btn-outline rounded-sm">
-                Explore Collection
+                {t.hero.explore}
               </button>
             </motion.div>
 
@@ -83,15 +96,15 @@ const HeroSection = () => {
             >
               <div>
                 <p className="font-display text-3xl font-semibold text-foreground">50K+</p>
-                <p className="mt-1 font-body text-sm text-muted-foreground">Happy Customers</p>
+                <p className="mt-1 font-body text-sm text-muted-foreground">{t.hero.stats.customers}</p>
               </div>
               <div>
                 <p className="font-display text-3xl font-semibold text-foreground">200+</p>
-                <p className="mt-1 font-body text-sm text-muted-foreground">New Arrivals</p>
+                <p className="mt-1 font-body text-sm text-muted-foreground">{t.hero.stats.arrivals}</p>
               </div>
               <div>
                 <p className="font-display text-3xl font-semibold text-foreground">4.9★</p>
-                <p className="mt-1 font-body text-sm text-muted-foreground">Rating</p>
+                <p className="mt-1 font-body text-sm text-muted-foreground">{t.hero.stats.rating}</p>
               </div>
             </motion.div>
           </div>
@@ -99,44 +112,32 @@ const HeroSection = () => {
 
         {/* Right Image */}
         <motion.div
-          initial={{ opacity: 0, x: 50 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ delay: 0.3, duration: 1, ease: "easeOut" }}
-          className="relative flex-1 lg:flex-[1.1]"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.3, duration: 1 }}
+          className="relative flex-1 lg:flex-[1.1] overflow-hidden"
         >
-          <div className="absolute inset-0 bg-gradient-to-t from-background/20 via-transparent to-transparent lg:bg-gradient-to-r lg:from-background/30" />
-          <ImageWithFallback
-            src={heroModel}
-            alt="Fashion model wearing elegant neutral-toned outfit"
-            className="h-full w-full object-cover object-top"
-            style={{ minHeight: "50vh" }}
-          />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent z-10" />
           
-          {/* Decorative element */}
-          <motion.div
-            initial={{ scale: 0 }}
-            animate={{ scale: 1 }}
-            transition={{ delay: 1.4, duration: 0.6, ease: "backOut" }}
-            className="absolute bottom-12 left-6 hidden rounded-lg bg-background/90 p-6 shadow-medium backdrop-blur-sm lg:block"
-          >
-            <p className="font-body text-xs uppercase tracking-wider text-muted-foreground">Featured</p>
-            <p className="mt-1 font-display text-lg font-semibold text-foreground">Silk Blend Blazer</p>
-            <p className="mt-1 font-body text-gold">$289.00</p>
-          </motion.div>
+          <AnimatePresence mode="wait">
+            <motion.div
+              key={currentImageIndex}
+              initial={{ opacity: 0, scale: 1.05 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 1.5, ease: "easeInOut" }}
+              className="h-full w-full"
+            >
+              <ImageWithFallback
+                src={heroImages[currentImageIndex]}
+                alt={`Fashion model ${currentImageIndex + 1}`}
+                className="h-full w-full object-cover object-top"
+                style={{ minHeight: "100%" }}
+              />
+            </motion.div>
+          </AnimatePresence>
         </motion.div>
       </div>
-
-      {/* Scroll Indicator */}
-      <motion.button
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 1.5, duration: 0.6 }}
-        onClick={scrollToProducts}
-        className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 text-muted-foreground transition-colors hover:text-foreground"
-      >
-        <span className="font-body text-xs uppercase tracking-widest">Scroll</span>
-        <ChevronDown className="h-5 w-5 animate-scroll-hint" />
-      </motion.button>
     </section>
   );
 };

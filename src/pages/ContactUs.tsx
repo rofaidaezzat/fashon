@@ -1,8 +1,10 @@
 import React, { useState } from "react";
 import { Mail, Phone, MapPin, Send, CheckCircle } from "lucide-react";
 import { useContactUs } from "../api/contactUs";
+import { useLanguage } from "../context/LanguageContext";
 
 const ContactUs = () => {
+  const { t } = useLanguage();
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -45,43 +47,40 @@ const ContactUs = () => {
         {/* Left Side: Contact Information */}
         <div className="lg:w-5/12 bg-gray-900 p-10 text-white flex flex-col justify-between">
           <div>
-            <h2 className="text-3xl font-bold mb-4">Get in Touch</h2>
+            <h2 className="text-3xl font-bold mb-4">{t.contact.title}</h2>
             <p className="text-gray-400 mb-8 leading-relaxed">
-              Have a question about a product or your order? We'd love to hear from
-              you. Fill out the form and we'll get back to you as soon as
-              possible.
+              {t.contact.subtitle}
             </p>
 
             <div className="space-y-6">
-              <div className="flex items-start space-x-4">
+              <div className="flex items-start gap-4">
                 <div className="bg-white/10 p-3 rounded-full">
                   <Phone className="w-5 h-5 text-rose-500" />
                 </div>
                 <div>
-                  <h3 className="font-semibold text-lg">Phone</h3>
-                  <p className="text-gray-400">01034511777</p>
+                  <h3 className="font-semibold text-lg">{t.contact.phone}</h3>
+                  <a href={`tel:${t.contact.phone_number}`} className="text-gray-400 hover:text-white transition-colors" dir="ltr">{t.contact.phone_number}</a>
                 </div>
               </div>
 
-              <div className="flex items-start space-x-4">
+              <div className="flex items-start gap-4">
                 <div className="bg-white/10 p-3 rounded-full">
                   <Mail className="w-5 h-5 text-rose-500" />
                 </div>
                 <div>
-                  <h3 className="font-semibold text-lg">Email</h3>
-                  <p className="text-gray-400">fatmakhalid488@gmail.com</p>
+                  <h3 className="font-semibold text-lg">{t.contact.email}</h3>
+                  <a href={`mailto:${t.contact.email_value}`} className="text-gray-400 hover:text-white transition-colors">{t.contact.email_value}</a>
                 </div>
               </div>
 
-              <div className="flex items-start space-x-4">
+              <div className="flex items-start gap-4">
                 <div className="bg-white/10 p-3 rounded-full">
                   <MapPin className="w-5 h-5 text-rose-500" />
                 </div>
                 <div>
-                  <h3 className="font-semibold text-lg">Office</h3>
+                  <h3 className="font-semibold text-lg">{t.contact.office}</h3>
                   <p className="text-gray-400">
-                   123 حدائق الاهرام الضغط العالي اعلى مطعم الطباخ
-                   
+                   {t.contact.office_address}
                   </p>
                 </div>
               </div>
@@ -89,13 +88,13 @@ const ContactUs = () => {
           </div>
 
           <div className="mt-12 lg:mt-0">
-             <div className="flex space-x-2 mb-4">
+             <div className="flex gap-2 mb-4">
                  <div className="w-8 h-1 bg-rose-500 rounded"></div>
                  <div className="w-4 h-1 bg-rose-500/50 rounded"></div>
                  <div className="w-2 h-1 bg-rose-500/20 rounded"></div>
              </div>
             <p className="text-sm text-gray-500">
-              © 2026 Fashon. All rights reserved.
+              {t.contact.rights}
             </p>
           </div>
         </div>
@@ -109,7 +108,7 @@ const ContactUs = () => {
                 htmlFor="name"
                 className="block text-sm font-medium text-gray-700 mb-2"
               >
-                Full Name
+                {t.contact.form.name}
               </label>
               <input
                 type="text"
@@ -118,7 +117,7 @@ const ContactUs = () => {
                 required
                 value={formData.name}
                 onChange={handleChange}
-                placeholder="Laila Ahmed"
+                placeholder={t.contact.form.placeholders.name}
                 className="w-full px-5 py-3 rounded-xl bg-gray-50 border border-gray-200 text-gray-900 focus:outline-none focus:ring-2 focus:ring-rose-500 focus:border-transparent transition-all shadow-sm"
               />
             </div>
@@ -129,7 +128,7 @@ const ContactUs = () => {
                 htmlFor="email"
                 className="block text-sm font-medium text-gray-700 mb-2"
               >
-                Email Address
+                {t.contact.form.email}
               </label>
               <input
                 type="email"
@@ -138,7 +137,7 @@ const ContactUs = () => {
                 required
                 value={formData.email}
                 onChange={handleChange}
-                placeholder="laila@example.com"
+                placeholder={t.contact.form.placeholders.email}
                 className="w-full px-5 py-3 rounded-xl bg-gray-50 border border-gray-200 text-gray-900 focus:outline-none focus:ring-2 focus:ring-rose-500 focus:border-transparent transition-all shadow-sm"
               />
             </div>
@@ -149,7 +148,7 @@ const ContactUs = () => {
                 htmlFor="message"
                 className="block text-sm font-medium text-gray-700 mb-2"
               >
-                Your Message
+                {t.contact.form.message}
               </label>
               <textarea
                 id="message"
@@ -158,7 +157,7 @@ const ContactUs = () => {
                 rows={4}
                 value={formData.message}
                 onChange={handleChange}
-                placeholder="I have a question about the sizing..."
+                placeholder={t.contact.form.placeholders.message}
                 className="w-full px-5 py-3 rounded-xl bg-gray-50 border border-gray-200 text-gray-900 focus:outline-none focus:ring-2 focus:ring-rose-500 focus:border-transparent transition-all shadow-sm resize-none"
               ></textarea>
             </div>
@@ -199,17 +198,17 @@ const ContactUs = () => {
                         d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
                       ></path>
                     </svg>
-                    Sending...
+                    {t.contact.form.sending}
                   </span>
                 ) : isSent ? (
-                  <span className="flex items-center">
-                    <CheckCircle className="w-5 h-5 mr-2" />
-                    Message Sent!
+                  <span className="flex items-center gap-2">
+                    <CheckCircle className="w-5 h-5" />
+                    {t.contact.form.sent}
                   </span>
                 ) : (
-                  <span className="flex items-center">
-                    Send Message
-                    <Send className="w-4 h-4 ml-2" />
+                  <span className="flex items-center gap-2">
+                    {t.contact.form.send}
+                    <Send className="w-4 h-4 rtl:rotate-180" />
                   </span>
                 )}
               </button>

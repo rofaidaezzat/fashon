@@ -9,7 +9,10 @@ import toast from 'react-hot-toast';
 import { EGYPTIAN_CITIES } from "../data/cities";
 import ImageWithFallback from "../Components/ImageWithFallback";
 
+import { useLanguage } from "../context/LanguageContext";
+
 const Order = () => {
+    const { t } = useLanguage();
     const dispatch = useDispatch();
     const navigate = useNavigate();
     const rawCartItems = useSelector((state: RootState) => state.cart.items);
@@ -58,9 +61,8 @@ const Order = () => {
                 }
             } catch (error) {
                 console.error("Failed to fetch shipping price", error);
-                toast.error("Could not calculate shipping for this city.");
-            } finally {
-                setIsLoadingShipping(false);
+                toast.error(t.order.error);
+            } finally {                setIsLoadingShipping(false);
             }
         }
     };
@@ -74,7 +76,7 @@ const Order = () => {
         e.preventDefault();
         
         if (!formData.city) {
-            toast.error("Please select a city.");
+            toast.error(t.order.form.select_city_ph);
             return;
         }
 
@@ -119,7 +121,7 @@ const Order = () => {
 
             if (response.status === "success") {
                 dispatch(clearCart());
-                toast.success("Order created successfully!");
+                toast.success(t.order.success);
                 // Navigate to Thank You page with details
                 navigate('/thank-you', { 
                     state: { 
@@ -130,14 +132,13 @@ const Order = () => {
                     } 
                 }); 
             } else {
-                toast.error("Failed to create order: " + response.message);
+                toast.error(t.order.error + ": " + response.message);
             }
 
         } catch (error: any) {
             console.error("Order creation error:", error);
-            toast.error("An error occurred while placing the order. Please try again.");
-        } finally {
-            setIsSubmitting(false);
+            toast.error(t.order.error);
+        } finally {            setIsSubmitting(false);
         }
     };
 
@@ -145,13 +146,13 @@ const Order = () => {
     if (cartItems.length === 0) {
          return (
             <div className="min-h-[60vh] flex flex-col items-center justify-center bg-gray-50 px-4">
-                <h2 className="text-3xl font-bold text-gray-900 mb-4">Your Cart is Empty</h2>
-                <p className="text-gray-500 mb-8">Looks like you haven't added anything yet.</p>
+                <h2 className="text-3xl font-bold text-gray-900 mb-4">{t.order.empty_title}</h2>
+                <p className="text-gray-500 mb-8">{t.order.empty_desc}</p>
                 <Link
                     to="/shop"
                     className="bg-gray-900 text-white px-8 py-3 rounded-full hover:bg-rose-600 transition-colors flex items-center gap-2"
                 >
-                    Start Shopping <ArrowRight className="w-5 h-5" />
+                    {t.cart.start_shopping} <ArrowRight className="w-5 h-5 rtl:rotate-180" />
                 </Link>
             </div>
         );
@@ -160,7 +161,7 @@ const Order = () => {
     return (
         <div className="min-h-screen bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
             <div className="max-w-7xl mx-auto">
-                <h1 className="text-3xl font-bold text-gray-900 mb-8">Shopping Cart & Checkout</h1>
+                <h1 className="text-3xl font-bold text-gray-900 mb-8">{t.order.title}</h1>
                 
                 <div className="flex flex-col lg:flex-row gap-8">
                     {/* Cart Items */}
@@ -183,17 +184,17 @@ const Order = () => {
                                         <div className="flex gap-2 mt-1">
                                             {item.selectedSize && (
                                                 <span className="inline-block bg-gray-100 text-gray-600 text-xs px-2 py-1 rounded">
-                                                    Size: {item.selectedSize}
+                                                    {t.cart.size}: {item.selectedSize}
                                                 </span>
                                             )}
                                             {item.selectedColor && item.selectedColor !== "Default" && (
                                                 <span className="inline-block bg-gray-100 text-gray-600 text-xs px-2 py-1 rounded">
-                                                    Color: {item.selectedColor}
+                                                    {t.cart.color}: {item.selectedColor}
                                                 </span>
                                             )}
                                         </div>
                                         <div className="mt-2 font-bold text-rose-600">
-                                            EGP {item.product.price.toFixed(2)}
+                                            {t.product.price} {item.product.price.toFixed(2)}
                                         </div>
                                     </div>
 
@@ -227,44 +228,44 @@ const Order = () => {
                     {/* Checkout Form */}
                     <div className="lg:w-1/3">
                         <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6 sticky top-24">
-                            <h2 className="text-xl font-bold text-gray-900 mb-6">Order Summary</h2>
+                            <h2 className="text-xl font-bold text-gray-900 mb-6">{t.order.summary}</h2>
                             
                             <div className="space-y-3 mb-6 text-gray-600">
                                 <div className="flex justify-between">
-                                    <span>Subtotal</span>
-                                    <span>EGP {subtotal.toFixed(2)}</span>
+                                    <span>{t.cart.subtotal}</span>
+                                    <span>{t.product.price} {subtotal.toFixed(2)}</span>
                                 </div>
                                 {shippingData ? (
                                     <>
                                         <div className="flex justify-between text-sm">
-                                            <span>Shipping</span>
-                                            <span>EGP {shippingData.priceBeforeVat.toFixed(2)}</span>
+                                            <span>{t.order.shipping}</span>
+                                            <span>{t.product.price} {shippingData.priceBeforeVat.toFixed(2)}</span>
                                         </div>
                                         <div className="flex justify-between text-sm">
-                                            <span>VAT ({(shippingData.vat * 100).toFixed(0)}%)</span>
-                                            <span>EGP {(shippingData.priceAfterVat - shippingData.priceBeforeVat).toFixed(2)}</span>
+                                            <span>{t.order.vat} ({(shippingData.vat * 100).toFixed(0)}%)</span>
+                                            <span>{t.product.price} {(shippingData.priceAfterVat - shippingData.priceBeforeVat).toFixed(2)}</span>
                                         </div>
                                         <div className="flex justify-between text-sm font-medium text-rose-600">
-                                            <span>Shipping Cost (Inc. VAT)</span>
-                                            <span>EGP {shippingData.priceAfterVat.toFixed(2)}</span>
+                                            <span>{t.order.shipping_cost}</span>
+                                            <span>{t.product.price} {shippingData.priceAfterVat.toFixed(2)}</span>
                                         </div>
                                     </>
                                 ) : (
                                     <div className="flex justify-between text-sm text-gray-400 italic">
-                                        <span>Shipping</span>
-                                        <span>Select city to calculate</span>
+                                        <span>{t.order.shipping}</span>
+                                        <span>{t.order.select_city}</span>
                                     </div>
                                 )}
                             </div>
                             
                             <div className="flex justify-between mb-8 text-xl font-bold text-gray-900 border-t pt-4">
-                                <span>Total</span>
-                                <span>EGP {total.toFixed(2)}</span>
+                                <span>{t.cart.total}</span>
+                                <span>{t.product.price} {total.toFixed(2)}</span>
                             </div>
 
                             <form onSubmit={handleSubmit} className="space-y-4">
                                 <div>
-                                    <label className="block text-sm font-medium text-gray-700 mb-1">Full Name</label>
+                                    <label className="block text-sm font-medium text-gray-700 mb-1">{t.order.form.name}</label>
                                     <input
                                         type="text"
                                         name="name"
@@ -272,11 +273,11 @@ const Order = () => {
                                         value={formData.name}
                                         onChange={handleInputChange}
                                         className="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-rose-500 focus:border-transparent outline-none"
-                                        placeholder="John Doe"
+                                        placeholder={t.order.form.placeholders.name}
                                     />
                                 </div>
                                 <div>
-                                    <label className="block text-sm font-medium text-gray-700 mb-1">Email</label>
+                                    <label className="block text-sm font-medium text-gray-700 mb-1">{t.order.form.email}</label>
                                     <input
                                         type="email"
                                         name="email"
@@ -284,11 +285,11 @@ const Order = () => {
                                         value={formData.email}
                                         onChange={handleInputChange}
                                         className="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-rose-500 focus:border-transparent outline-none"
-                                        placeholder="john@example.com"
+                                        placeholder={t.order.form.placeholders.email}
                                     />
                                 </div>
                                 <div>
-                                    <label className="block text-sm font-medium text-gray-700 mb-1">Phone Number</label>
+                                    <label className="block text-sm font-medium text-gray-700 mb-1">{t.order.form.phone}</label>
                                     <input
                                         type="tel"
                                         name="phone"
@@ -296,12 +297,12 @@ const Order = () => {
                                         value={formData.phone}
                                         onChange={handleInputChange}
                                         className="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-rose-500 focus:border-transparent outline-none"
-                                        placeholder="01xxxxxxxxx"
+                                        placeholder={t.order.form.placeholders.phone}
                                     />
                                 </div>
                                 <div className="grid grid-cols-2 gap-4">
                                     <div>
-                                        <label className="block text-sm font-medium text-gray-700 mb-1">City</label>
+                                        <label className="block text-sm font-medium text-gray-700 mb-1">{t.order.form.city}</label>
                                          <select
                                             name="city"
                                             required
@@ -309,14 +310,14 @@ const Order = () => {
                                             onChange={handleCityChange}
                                             className="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-rose-500 focus:border-transparent outline-none bg-white"
                                         >
-                                            <option value="">Select City</option>
+                                            <option value="">{t.order.form.select_city_ph}</option>
                                             {EGYPTIAN_CITIES.map(city => (
                                                 <option key={city} value={city}>{city}</option>
                                             ))}
                                         </select>
                                     </div>
                                     <div>
-                                        <label className="block text-sm font-medium text-gray-700 mb-1">District</label>
+                                        <label className="block text-sm font-medium text-gray-700 mb-1">{t.order.form.district}</label>
                                         <input
                                             type="text"
                                             name="district"
@@ -324,12 +325,12 @@ const Order = () => {
                                             value={formData.district}
                                             onChange={handleInputChange}
                                             className="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-rose-500 focus:border-transparent outline-none"
-                                            placeholder="Maadi"
+                                            placeholder={t.order.form.placeholders.district}
                                         />
                                     </div>
                                 </div>
                                 <div>
-                                    <label className="block text-sm font-medium text-gray-700 mb-1">Address Details</label>
+                                    <label className="block text-sm font-medium text-gray-700 mb-1">{t.order.form.address}</label>
                                     <input
                                         type="text"
                                         name="address"
@@ -337,7 +338,7 @@ const Order = () => {
                                         value={formData.address}
                                         onChange={handleInputChange}
                                         className="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-rose-500 focus:border-transparent outline-none"
-                                        placeholder="Building, Street, Apartment"
+                                        placeholder={t.order.form.placeholders.address}
                                     />
                                 </div>
 
@@ -346,7 +347,7 @@ const Order = () => {
                                     disabled={isSubmitting || (!!formData.city && isLoadingShipping)}
                                     className={`w-full mt-6 bg-gray-900 text-white py-3 rounded-lg font-bold hover:bg-gray-800 transition-colors shadow-lg hover:shadow-xl hover:-translate-y-1 ${isSubmitting || isLoadingShipping ? 'opacity-75 cursor-not-allowed' : ''}`}
                                 >
-                                    {isSubmitting ? 'Placing Order...' : (isLoadingShipping ? 'Calculating Shipping...' : 'Place Order')}
+                                    {isSubmitting ? t.order.placing : (isLoadingShipping ? t.order.calculating : t.order.place_order)}
                                 </button>
                             </form>
                         </div>

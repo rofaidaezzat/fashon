@@ -1,6 +1,7 @@
 import { useLocation, Link, Navigate } from "react-router-dom";
 import { CheckCircle, ShoppingBag, ArrowRight } from "lucide-react";
 import { motion } from "framer-motion";
+import { useLanguage } from "../context/LanguageContext";
 
 interface LocationState {
     orderId?: string;
@@ -14,6 +15,7 @@ interface LocationState {
 }
 
 const ThankYou = () => {
+    const { t } = useLanguage();
     const location = useLocation();
     const state = location.state as LocationState;
 
@@ -40,14 +42,14 @@ const ThankYou = () => {
                     >
                         <CheckCircle className="w-10 h-10 text-white" />
                     </motion.div>
-                    <h1 className="text-3xl font-bold mb-2">Order Confirmed!</h1>
-                    <p className="text-green-100">Your order has been placed successfully.</p>
+                    <h1 className="text-3xl font-bold mb-2">{t.thank_you.title}</h1>
+                    <p className="text-green-100">{t.thank_you.message}</p>
                 </div>
 
                 <div className="p-8">
                     {orderId && orderId !== "N/A" && (
                         <div className="text-center mb-8">
-                            <p className="text-gray-500 text-sm mb-1">Order Number</p>
+                            <p className="text-gray-500 text-sm mb-1">{t.thank_you.order_number}</p>
                             <p className="text-xl font-mono font-bold text-gray-900 bg-gray-50 inline-block px-4 py-2 rounded-lg border border-gray-100">
                                 #{orderId}
                             </p>
@@ -55,40 +57,40 @@ const ThankYou = () => {
                     )}
 
                     <div className="space-y-4 border-b border-gray-100 pb-8 mb-8">
-                        <h3 className="font-bold text-gray-900 mb-4">Payment Summary</h3>
+                        <h3 className="font-bold text-gray-900 mb-4">{t.thank_you.payment_summary}</h3>
                         <div className="flex justify-between text-gray-600">
-                            <span>Subtotal</span>
-                            <span>EGP {subtotal.toFixed(2)}</span>
+                            <span>{t.thank_you.subtotal}</span>
+                            <span>{t.product.price} {subtotal.toFixed(2)}</span>
                         </div>
                         {shipping && (
                             <>
                                 <div className="flex justify-between text-gray-600">
-                                    <span>Shipping</span>
-                                    <span>EGP {shipping.priceBeforeVat.toFixed(2)}</span>
+                                    <span>{t.thank_you.shipping}</span>
+                                    <span>{t.product.price} {shipping.priceBeforeVat.toFixed(2)}</span>
                                 </div>
                                 <div className="flex justify-between text-gray-600">
-                                    <span>VAT ({(shipping.vat * 100).toFixed(0)}%)</span>
-                                    <span>EGP {(shipping.priceAfterVat - shipping.priceBeforeVat).toFixed(2)}</span>
+                                    <span>{t.thank_you.vat} ({(shipping.vat * 100).toFixed(0)}%)</span>
+                                    <span>{t.product.price} {(shipping.priceAfterVat - shipping.priceBeforeVat).toFixed(2)}</span>
                                 </div>
                             </>
                         )}
                         <div className="flex justify-between text-xl font-bold text-gray-900 pt-4 border-t border-gray-100">
-                            <span>Total Paid</span>
-                            <span>EGP {total.toFixed(2)}</span>
+                            <span>{t.thank_you.total_paid}</span>
+                            <span>{t.product.price} {total.toFixed(2)}</span>
                         </div>
                     </div>
 
                     <div className="text-center space-y-4">
                          <p className="text-gray-500 text-sm">
-                            We've sent a confirmation email to your inbox with all the details.
+                            {t.thank_you.email_confirm}
                         </p>
                         <Link 
                             to="/shop"
                             className="block w-full bg-gray-900 text-white py-4 rounded-xl font-bold hover:bg-gray-800 transition-all hover:shadow-lg hover:-translate-y-1 flex items-center justify-center gap-2 group"
                         >
                             <ShoppingBag className="w-5 h-5" />
-                            Continue Shopping
-                            <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+                            {t.thank_you.continue}
+                            <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform rtl:rotate-180" />
                         </Link>
                     </div>
                 </div>

@@ -7,6 +7,7 @@ import { removeFromCart, updateQuantity } from "../store/cartSlice";
 import { createPortal } from "react-dom";
 import { useEffect } from "react";
 import ImageWithFallback from "./ImageWithFallback";
+import { useLanguage } from "../context/LanguageContext";
 
 interface CartDrawerProps {
   isOpen: boolean;
@@ -16,8 +17,9 @@ interface CartDrawerProps {
 const CartDrawer = ({ isOpen, onClose }: CartDrawerProps) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const cartItems = useSelector((state: RootState) => state.cart.items);
-  const safeCartItems = Array.isArray(cartItems) ? cartItems : [];
+  const { t, language } = useLanguage();
+  const { items } = useSelector((state: RootState) => state.cart);
+  const safeCartItems = Array.isArray(items) ? items : [];
 
   const totalAmount = safeCartItems.reduce(
     (acc, item) => acc + item.product.price * item.quantity,
@@ -52,16 +54,25 @@ const CartDrawer = ({ isOpen, onClose }: CartDrawerProps) => {
     selectedColor?: string
   ) => {
     if (quantity < 1) {
-      dispatch(removeFromCart({ productId, selectedSize, selectedColor }));
-    } else {
-      dispatch(updateQuantity({ productId, quantity, selectedSize, selectedColor }));
+      return; 
     }
+    dispatch(updateQuantity({ productId, quantity, selectedSize, selectedColor }));
+  };
+
+  const handleRemoveItem = (
+    productId: string,
+    selectedSize?: string,
+    selectedColor?: string
+  ) => {
+    dispatch(removeFromCart({ productId, selectedSize, selectedColor }));
   };
 
   const handleCheckout = () => {
     onClose();
-    navigate("/order");
+    navigate('/order');
   };
+
+  if (!isOpen) return null;
 
   const drawerContent = (
     <AnimatePresence>
@@ -72,153 +83,136 @@ const CartDrawer = ({ isOpen, onClose }: CartDrawerProps) => {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
+            className="fixed inset-0 bg-black/50 backdrop-blur-sm z-[60]"
             onClick={onClose}
-            className="fixed inset-0 bg-black/60 backdrop-blur-sm z-[100]"
           />
 
           {/* Drawer */}
           <motion.div
-            initial={{ x: "100%" }}
-            animate={{ x: 0 }}
-            exit={{ x: "100%" }}
-            transition={{ type: "spring", damping: 25, stiffness: 200 }}
-            className="fixed top-0 right-0 h-full w-full max-w-[500px] bg-white shadow-2xl z-[110] flex flex-col"
+             initial={{ x: language === 'ar' ? '-100%' : '100%' }}
+             animate={{ x: 0 }}
+             exit={{ x: language === 'ar' ? '-100%' : '100%' }}
+             transition={{ type: "spring", damping: 25, stiffness: 200 }}
+             className={`fixed top-0 ${language === 'ar' ? 'left-0' : 'right-0'} h-full w-full max-w-md bg-white shadow-2xl z-[70] flex flex-col`}
           >
             {/* Header */}
-            <div className="flex items-center justify-between p-6 border-b border-gray-100 bg-white">
-              <h2 className="text-xl font-bold text-gray-900 flex items-center gap-2">
-                <ShoppingBag className="w-5 h-5" />
-                Shopping Cart
-                <span className="text-sm font-medium text-gray-500 bg-gray-100 px-2 py-1 rounded-full ml-2">
-                  {safeCartItems.length} items
+            <div className="p-6 border-b border-gray-100 flex items-center justify-between bg-white z-10 w-full">
+              <div className="flex items-center gap-3">
+                <ShoppingBag className="w-6 h-6 text-rose-500" />
+                <h2 className="text-xl font-bold text-gray-900">{t.cart.title}</h2>
+                <span className="bg-rose-100 text-rose-600 px-2 py-0.5 rounded-full text-sm font-bold">
+                  {items.length} {t.cart.items}
                 </span>
-              </h2>
+              </div>
               <button
                 onClick={onClose}
                 className="p-2 hover:bg-gray-100 rounded-full transition-colors group"
                 aria-label="Close cart"
               >
-                <X className="w-6 h-6 text-gray-400 group-hover:text-gray-900" />
+                <X className="w-6 h-6 text-gray-500 group-hover:text-rose-500" />
               </button>
             </div>
 
-            {/* Body */}
-            <div className="flex-1 overflow-y-auto bg-gray-50/50 p-6 space-y-6">
-              {safeCartItems.length === 0 ? (
-                <div className="h-full flex flex-col items-center justify-center text-center space-y-6">
-                  <div className="w-24 h-24 bg-gray-100 rounded-full flex items-center justify-center">
-                    <ShoppingBag className="w-10 h-10 text-gray-400" />
+            {/* Scrollable Content */}
+            <div className="flex-1 overflow-y-auto p-6 scrollbar-hide">
+              {items.length === 0 ? (
+                <div className="h-full flex flex-col items-center justify-center text-center space-y-4">
+                  <div className="w-20 h-20 bg-gray-50 rounded-full flex items-center justify-center">
+                    <ShoppingBag className="w-10 h-10 text-gray-300" />
                   </div>
                   <div>
-                    <h3 className="text-xl font-bold text-gray-900 mb-2">Your cart is empty</h3>
-                    <p className="text-gray-500 max-w-[200px] mx-auto">
-                      Looks like you haven't added any items to your cart yet.
-                    </p>
+                     <h3 className="text-lg font-bold text-gray-900 mb-2">
+                        {t.cart.empty_title}
+                      </h3>
+                      <p className="text-gray-500 max-w-xs mx-auto">
+                        {t.cart.empty_desc}
+                      </p>
                   </div>
                   <button
-                    onClick={() => {
-                      onClose();
-                      navigate("/shop");
-                    }}
-                    className="px-8 py-3 bg-gray-900 text-white font-bold rounded-full hover:bg-rose-600 transition-colors shadow-lg hover:shadow-xl hover:-translate-y-1"
+                    onClick={onClose}
+                    className="px-6 py-3 bg-gray-900 text-white rounded-xl font-medium hover:bg-gray-800 transition-colors"
                   >
-                    Start Shopping
+                    {t.cart.start_shopping}
                   </button>
                 </div>
               ) : (
-                safeCartItems.map((item) => (
-                  <div
-                    key={`${item.product._id}-${item.selectedSize}-${item.selectedColor}`}
-                    className="flex gap-5 p-4 rounded-2xl bg-white border border-gray-100 shadow-sm hover:shadow-md transition-shadow group relative overflow-hidden"
-                  >
-                    {/* Product Image */}
-                    <div className="w-24 h-32 flex-shrink-0 bg-gray-100 rounded-xl overflow-hidden border border-gray-100">
-                      <ImageWithFallback
-                        src={item.product.images[0]}
-                        alt={item.product.name}
-                        className="w-full h-full object-cover"
-                      />
-                    </div>
-
-                    {/* Product Details */}
-                    <div className="flex-1 flex flex-col justify-between py-1">
-                      <div>
-                        <div className="flex justify-between items-start gap-4">
-                          <h3 className="text-base font-bold text-gray-900 leading-snug">
-                            {item.product.name}
-                          </h3>
-                          <button
-                            onClick={() =>
-                              dispatch(
-                                removeFromCart({
-                                  productId: item.product._id,
-                                  selectedSize: item.selectedSize,
-                                  selectedColor: item.selectedColor,
-                                })
-                              )
-                            }
-                            className="text-gray-400 hover:text-red-500 transition-colors p-1 -mr-2 -mt-2"
-                            aria-label="Remove item"
-                          >
-                            <Trash2 className="w-4 h-4" />
-                          </button>
-                        </div>
-                        
-                        <div className="flex flex-wrap gap-2 mt-2">
-                          {item.selectedSize && (
-                            <div className="inline-flex items-center px-2 py-1 rounded bg-gray-100 border border-gray-200 text-xs font-medium text-gray-600">
-                              Size: <span className="text-gray-900 ml-1">{item.selectedSize}</span>
-                            </div>
-                          )}
-                          {item.selectedColor && item.selectedColor !== "Default" && (
-                            <div className="inline-flex items-center px-2 py-1 rounded bg-gray-100 border border-gray-200 text-xs font-medium text-gray-600">
-                              Color: <span className="text-gray-900 ml-1">{item.selectedColor}</span>
-                            </div>
-                          )}
-                        </div>
-                        
-                        <div className="mt-2 font-bold text-rose-600">
-                          EGP {item.product.price.toLocaleString()}
-                        </div>
+                <div className="space-y-6">
+                  {items.map((item, idx) => (
+                    <div 
+                      key={`${item.product._id}-${item.selectedSize}-${item.selectedColor}-${idx}`}
+                      className="flex gap-4"
+                    >
+                      <div className="w-24 h-24 flex-shrink-0 rounded-lg overflow-hidden border border-gray-100">
+                        <ImageWithFallback 
+                          src={item.product.images[0]} 
+                          alt={item.product.name} 
+                          className="w-full h-full object-cover"
+                        />
                       </div>
+                      
+                      <div className="flex-1 flex flex-col justify-between">
+                        <div>
+                          <div className="flex justify-between items-start mb-1">
+                            <h3 className="font-medium text-gray-900 line-clamp-1">{item.product.name}</h3>
+                            <button 
+                              onClick={() => handleRemoveItem(item.product._id, item.selectedSize, item.selectedColor)}
+                              className="text-gray-400 hover:text-red-500 transition-colors p-1"
+                              aria-label="Remove item"
+                            >
+                              <Trash2 className="w-4 h-4" />
+                            </button>
+                          </div>
+                          
+                          <div className="text-sm text-gray-500 space-y-1">
+                            {item.selectedSize && item.selectedSize !== "Default" && (
+                              <p>{t.cart.size}: {item.selectedSize}</p>
+                            )}
+                            {item.selectedColor && item.selectedColor !== "Default" && (
+                              <p>{t.cart.color}: {item.selectedColor}</p>
+                            )}
+                          </div>
+                        </div>
 
-                      {/* Quantity Controls */}
-                      <div className="flex items-center gap-4 mt-3">
-                        <div className="flex items-center bg-gray-50 rounded-lg border border-gray-200 p-1">
-                          <button
-                            onClick={() =>
-                              handleUpdateQuantity(
+                        <div className="flex items-center justify-between mt-2">
+                          <span className="font-bold text-rose-600">
+                            {t.product.price} {item.product.price.toFixed(2)}
+                          </span>
+                          
+                          <div className="flex items-center gap-3">
+                            <button
+                              onClick={() => handleUpdateQuantity(
                                 item.product._id,
                                 item.quantity - 1,
                                 item.selectedSize,
                                 item.selectedColor
-                              )
-                            }
-                            className="w-7 h-7 flex items-center justify-center rounded-md bg-white border border-gray-200 text-gray-600 hover:border-gray-400 hover:text-rose-600 transition-all shadow-sm"
-                          >
-                            <Minus className="w-3 h-3" />
-                          </button>
-                          <span className="text-sm font-bold w-10 text-center text-gray-900">
-                            {item.quantity}
-                          </span>
-                          <button
-                            onClick={() =>
-                              handleUpdateQuantity(
+                              )}
+                              className={`w-7 h-7 flex items-center justify-center rounded-md bg-white border border-gray-200 text-gray-600 transition-all shadow-sm ${
+                                item.quantity <= 1 
+                                  ? "opacity-50 cursor-not-allowed" 
+                                  : "hover:border-gray-400 hover:text-rose-600"
+                              }`}
+                              disabled={item.quantity <= 1}
+                            >
+                              <Minus className="w-3 h-3" />
+                            </button>
+                            <span className="text-sm font-bold w-4 text-center">{item.quantity}</span>
+                            <button
+                              onClick={() => handleUpdateQuantity(
                                 item.product._id,
                                 item.quantity + 1,
                                 item.selectedSize,
                                 item.selectedColor
-                              )
-                            }
-                            className="w-7 h-7 flex items-center justify-center rounded-md bg-white border border-gray-200 text-gray-600 hover:border-gray-400 hover:text-rose-600 transition-all shadow-sm"
-                          >
-                            <Plus className="w-3 h-3" />
-                          </button>
+                              )}
+                              className="w-7 h-7 flex items-center justify-center rounded-md bg-white border border-gray-200 text-gray-600 hover:border-gray-400 hover:text-rose-600 transition-all shadow-sm"
+                            >
+                              <Plus className="w-3 h-3" />
+                            </button>
+                          </div>
                         </div>
                       </div>
                     </div>
-                  </div>
-                ))
+                  ))}
+                </div>
               )}
             </div>
 
@@ -227,22 +221,22 @@ const CartDrawer = ({ isOpen, onClose }: CartDrawerProps) => {
               <div className="border-t border-gray-100 p-6 bg-white space-y-4 shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.05)]">
                 <div className="space-y-2">
                   <div className="flex items-center justify-between text-gray-500">
-                    <span>Subtotal</span>
-                    <span>EGP {totalAmount.toLocaleString()}</span>
+                    <span>{t.cart.subtotal}</span>
+                    <span>{t.product.price} {totalAmount.toLocaleString()}</span>
                   </div>
                   <div className="flex items-center justify-between text-lg font-bold text-gray-900 pt-2 border-t border-gray-100">
-                    <span>Total</span>
-                    <span>EGP {totalAmount.toLocaleString()}</span>
+                    <span>{t.cart.total}</span>
+                    <span>{t.product.price} {totalAmount.toLocaleString()}</span>
                   </div>
                 </div>
                 <p className="text-xs text-center text-gray-400">
-                  Shipping and taxes calculated at checkout.
+                  {t.cart.shipping_note}
                 </p>
                 <button
                   onClick={handleCheckout}
                   className="w-full flex items-center justify-center rounded-full bg-gray-900 py-4 text-base font-bold text-white shadow-lg hover:bg-rose-600 hover:shadow-rose-500/25 transition-all hover:-translate-y-1 active:scale-[0.98]"
                 >
-                  Proceed to Checkout
+                  {t.cart.checkout}
                 </button>
               </div>
             )}

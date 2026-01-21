@@ -5,7 +5,6 @@ import { useQuery } from "@tanstack/react-query";
 import { useRef } from "react";
 import { getProducts } from "../api/products";
 import ProductSkeleton from "../Components/ProductSkeleton";
-
 import ProductCard from "../Components/ProductCard";
 import styleInspo1 from "../assets/photo_2026-01-14_14-28-22.jpg";
 import styleInspo2 from "../assets/photo_2026-01-14_14-29-04.jpg";
@@ -13,10 +12,12 @@ import styleInspo3 from "../assets/photo_2026-01-14_14-29-42.jpg";
 import saleModel from "../assets/photo_2026-01-14_14-46-49.jpg";
 import HeroSection from "../Components/HeroSection";
 import ImageWithFallback from "../Components/ImageWithFallback";
+import { useLanguage } from "../context/LanguageContext";
 
 export default function Home() {
   const popularSectionRef = useRef(null);
   const isInView = useInView(popularSectionRef, { once: true, margin: "-100px" });
+  const { t } = useLanguage();
 
   const { data, isLoading } = useQuery({
     queryKey: ["products", "popular"],
@@ -61,7 +62,7 @@ export default function Home() {
         <div className="container mx-auto px-6">
           <div className="text-center mb-16">
             <h2 className="text-3xl md:text-4xl font-normal text-gray-800 mb-4">
-              Our most popular products
+              {t.home.popular_title}
             </h2>
             <div className="w-24 h-1 bg-rose-500 mx-auto"></div>
           </div>
@@ -87,7 +88,7 @@ export default function Home() {
           <div className="mt-16 text-center">
             <Link to="/shop">
               <button className="px-10 py-3 border-2 border-gray-900 text-gray-900 font-bold uppercase tracking-widest hover:bg-gray-900 hover:text-white transition-all duration-300">
-                View All Products
+                {t.home.view_all}
               </button>
             </Link>
           </div>
@@ -107,35 +108,32 @@ export default function Home() {
           <div className="flex flex-col md:flex-row items-center justify-between gap-12">
             <div className="md:w-1/2">
               <span className="text-rose-400 font-bold tracking-wider uppercase mb-2 block">
-                Limited Time Offer
+                {t.home.promo.offer}
               </span>
               <h2 className="text-4xl md:text-5xl font-bold mb-6 leading-tight">
-                Winter Collection <br />
+                {t.home.promo.title_1} <br />
                 <span className="text-transparent bg-clip-text bg-gradient-to-r from-rose-400 to-pink-500">
-                  Up to 50% Off
+                  {t.home.promo.title_2}
                 </span>
               </h2>
               <p className="text-gray-300 text-lg mb-8 max-w-md leading-relaxed">
-                Upgrade your wardrobe with our premium winter essentials.
-                Exclusive deals available for a limited time only.
+                {t.home.promo.description}
               </p>
 
               <div className="flex gap-4 mb-8">
                 <div className="text-center p-4 bg-white/10 rounded-lg backdrop-blur-sm min-w-[80px]">
                   <span className="block text-2xl font-bold">02</span>
-                  <span className="text-xs text-gray-400 uppercase">Days</span>
+                  <span className="text-xs text-gray-400 uppercase">{t.home.promo.days}</span>
                 </div>
                 <div className="text-center p-4 bg-white/10 rounded-lg backdrop-blur-sm min-w-[80px]">
                   <span className="block text-2xl font-bold">14</span>
-                  <span className="text-xs text-gray-400 uppercase">Hours</span>
+                  <span className="text-xs text-gray-400 uppercase">{t.home.promo.hours}</span>
                 </div>
                 <div className="text-center p-4 bg-white/10 rounded-lg backdrop-blur-sm min-w-[80px]">
                   <span className="block text-2xl font-bold">45</span>
-                  <span className="text-xs text-gray-400 uppercase">Mins</span>
+                  <span className="text-xs text-gray-400 uppercase">{t.home.promo.mins}</span>
                 </div>
               </div>
-
-             
             </div>
             <div className="md:w-1/2 relative">
               <div className="relative z-10">
@@ -161,36 +159,32 @@ export default function Home() {
               <div className="w-16 h-16 bg-rose-50 rounded-full flex items-center justify-center mb-6 text-rose-600">
                 <CheckCircle className="w-8 h-8" />
               </div>
-              <h3 className="text-xl font-bold mb-3">Premium Quality</h3>
+              <h3 className="text-xl font-bold mb-3">{t.home.features.quality_title}</h3>
               <p className="text-gray-500 leading-relaxed">
-                We source only the finest fabrics to ensure comfort and
-                longevity.
+                {t.home.features.quality_desc}
               </p>
             </div>
             <div className="flex flex-col items-center">
               <div className="w-16 h-16 bg-rose-50 rounded-full flex items-center justify-center mb-6 text-rose-600">
                 <TrendingUp className="w-8 h-8" />
               </div>
-              <h3 className="text-xl font-bold mb-3">Latest Trends</h3>
+              <h3 className="text-xl font-bold mb-3">{t.home.features.trends_title}</h3>
               <p className="text-gray-500 leading-relaxed">
-                Our collections are updated weekly with the hottest fashion
-                trends.
+                {t.home.features.trends_desc}
               </p>
             </div>
             <div className="flex flex-col items-center">
               <div className="w-16 h-16 bg-rose-50 rounded-full flex items-center justify-center mb-6 text-rose-600">
                 <Mail className="w-8 h-8" />
               </div>
-              <h3 className="text-xl font-bold mb-3">Fast Support</h3>
+              <h3 className="text-xl font-bold mb-3">{t.home.features.support_title}</h3>
               <p className="text-gray-500 leading-relaxed">
-                24/7 Customer support via WhatsApp to assist with your orders.
+                {t.home.features.support_desc}
               </p>
             </div>
           </div>
         </div>
       </section>
-
-
     </main>
   );
 }

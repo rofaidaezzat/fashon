@@ -1,11 +1,12 @@
 import { Link, useLocation } from "react-router-dom";
-import { Menu, X, ShoppingBag } from "lucide-react";
+import { Menu, X, ShoppingBag, Languages } from "lucide-react";
 import { useState } from "react";
-import logo from "../assets/logo.png";
+import logo from "../assets/photo_2026-01-21_18-13-45.jpg";
 import { useSelector } from "react-redux";
 import { type RootState } from "../store/store";
 import CartDrawer from "./CartDrawer";
 import ImageWithFallback from "./ImageWithFallback";
+import { useLanguage } from "../context/LanguageContext";
 
 const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -14,12 +15,13 @@ const Navbar = () => {
   const cartItems = useSelector((state: RootState) => state.cart.items);
   const safeCartItems = Array.isArray(cartItems) ? cartItems : [];
   const cartCount = safeCartItems.reduce((acc, item) => acc + item.quantity, 0);
+  const { t, toggleLanguage, direction } = useLanguage();
 
   const navLinks = [
-    { name: "Home", path: "/" },
-    { name: "Shop", path: "/shop" },
-    { name: "About Us", path: "/about-us" },
-    { name: "Contact", path: "/contact-us" },
+    { name: t.navbar.home, path: "/" },
+    { name: t.navbar.shop, path: "/shop" },
+    { name: t.navbar.about, path: "/about-us" },
+    { name: t.navbar.contact, path: "/contact-us" },
   ];
 
   const isActive = (path: string) => location.pathname === path;
@@ -29,16 +31,16 @@ const Navbar = () => {
       <div className="container mx-auto px-6 py-3">
         <div className="flex items-center justify-between">
           {/* Logo */}
-          <Link to="/" className="flex items-center space-x-2 group relative z-50">
+          <Link to="/" className="flex items-center gap-2 group relative z-50">
             <ImageWithFallback
               src={logo}
               alt="Fashon Logo"
-              className="h-12 w-auto object-contain transition-transform duration-300 group-hover:scale-105"
+              className="h-16 w-16 rounded-full object-cover shadow-md transition-transform duration-300 group-hover:scale-105"
             />
           </Link>
 
           {/* Desktop Navigation - Centered */}
-          <div className="hidden md:flex items-center justify-center absolute left-1/2 top-1/2 -translate-y-1/2 -translate-x-1/2 space-x-8">
+          <div className="hidden md:flex items-center justify-center absolute left-1/2 top-1/2 -translate-y-1/2 -translate-x-1/2 gap-8">
             {navLinks.map((link) => (
               <Link
                 key={link.path}
@@ -48,15 +50,19 @@ const Navbar = () => {
                 }`}
               >
                 {link.name}
-                <span className={`absolute bottom-0 left-0 w-full h-0.5 bg-rose-600 transform origin-left transition-transform duration-300 ${
+                <span className={`absolute bottom-0 start-0 w-full h-0.5 bg-rose-600 transform ${direction === 'rtl' ? 'origin-right' : 'origin-left'} transition-transform duration-300 ${
                   isActive(link.path) ? "scale-x-100" : "scale-x-0 group-hover:scale-x-100"
                 }`}></span>
               </Link>
             ))}
           </div>
             
-          {/* Desktop Actions (Cart) */}
+          {/* Desktop Actions (Cart & Language) */}
           <div className="hidden md:flex items-center gap-6">
+            <button onClick={toggleLanguage} className="p-2 hover:bg-gray-50 rounded-full transition-colors" aria-label="Toggle Language">
+              <Languages className="w-5 h-5 text-gray-900 hover:text-rose-600 transition-colors" />
+            </button>
+
             <button onClick={() => setIsCartOpen(true)} className="relative group p-2 hover:bg-gray-50 rounded-full transition-colors">
               <ShoppingBag className="w-5 h-5 text-gray-900 group-hover:text-rose-600 transition-colors" />
               {cartCount > 0 && (
@@ -69,6 +75,10 @@ const Navbar = () => {
 
           {/* Mobile Actions */}
           <div className="flex items-center gap-4 md:hidden">
+            <button onClick={toggleLanguage} className="p-2 hover:bg-gray-50 rounded-full transition-colors" aria-label="Toggle Language">
+              <Languages className="w-5 h-5 text-gray-900 hover:text-rose-600 transition-colors" />
+            </button>
+
             <button onClick={() => setIsCartOpen(true)} className="relative group p-2 hover:bg-gray-50 rounded-full transition-colors">
               <ShoppingBag className="w-5 h-5 text-gray-900 transition-colors" />
               {cartCount > 0 && (
