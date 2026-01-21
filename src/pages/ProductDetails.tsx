@@ -1,17 +1,19 @@
-import { useParams, Link } from "react-router-dom";
+import { useParams, Link, useNavigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { getProductById } from "../api/products";
 import { ArrowLeft, ShoppingCart, Minus, Plus } from "lucide-react";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useDispatch } from "react-redux";
 import { addToCart } from "../store/cartSlice";
 
 export default function ProductDetails() {
   const { id } = useParams<{ id: string }>();
-  const [selectedSize, setSelectedSize] = useState<string>("");
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [quantity, setQuantity] = useState(1);
+  const [selections, setSelections] = useState<{size: string, color: string}[]>([{size: "", color: ""}]);
+  
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const { data, isLoading, isError } = useQuery({
     queryKey: ["product", id],
@@ -21,31 +23,80 @@ export default function ProductDetails() {
 
   const product = data?.data;
 
-  // Auto-select first size
-  useEffect(() => {
-    if (product?.sizes && product.sizes.length > 0 && !selectedSize) {
-      const availableSizes = product.sizes
-        .flatMap((s) => s.split(",").map((i) => i.trim()))
-        .filter(Boolean);
-      
-      if (availableSizes.length > 0) {
-        setSelectedSize(availableSizes[0]);
-      }
-    }
-  }, [product, selectedSize]);
-
   const [isAdded, setIsAdded] = useState(false);
 
+  // Update selections array when quantity changes
+  const handleQuantityChange = (delta: number) => {
+    setQuantity(prev => {
+        const newQuantity = Math.max(1, prev + delta);
+        setSelections(currentSelections => {
+            const newSelections = [...currentSelections];
+            if (newQuantity > currentSelections.length) {
+                // Add new empty selections
+                for (let i = currentSelections.length; i < newQuantity; i++) {
+                    newSelections.push({size: "", color: ""});
+                }
+            } else if (newQuantity < currentSelections.length) {
+                // Remove last selections
+                return newSelections.slice(0, newQuantity);
+            }
+            return newSelections;
+        });
+        return newQuantity;
+    });
+  };
+
+  const handleSelectionChange = (index: number, field: 'size' | 'color', value: string) => {
+    setSelections(prev => {
+        const newSelections = [...prev];
+        newSelections[index] = { ...newSelections[index], [field]: value };
+        return newSelections;
+    });
+  };
+
+  const areAllSelectionsComplete = () => {
+    if (!product) return false;
+    const hasSizes = product.sizes && product.sizes.length > 0;
+    const hasColors = product.colors && product.colors.length > 0;
+
+    return selections.every(sel => 
+        (!hasSizes || sel.size) && (!hasColors || sel.color)
+    );
+  };
+
   const handleAddToCart = () => {
-    if (!product) return;
-    dispatch(addToCart({ product, quantity, selectedSize }));
+    if (!product || !areAllSelectionsComplete()) return;
+
+    // Dispatch for each selection
+    selections.forEach(sel => {
+        dispatch(addToCart({ 
+            product, 
+            quantity: 1, 
+            selectedSize: sel.size, 
+            selectedColor: sel.color 
+        }));
+    });
+
     setIsAdded(true);
     setTimeout(() => setIsAdded(false), 2000);
   };
 
-  const handleQuantityChange = (delta: number) => {
-    setQuantity(prev => Math.max(1, prev + delta));
+  const handleBuyNow = () => {
+    if (!product || !areAllSelectionsComplete()) return;
+    
+    // Dispatch for each selection
+    selections.forEach(sel => {
+         dispatch(addToCart({ 
+            product, 
+            quantity: 1, 
+            selectedSize: sel.size, 
+            selectedColor: sel.color 
+        }));
+    });
+
+    navigate("/order");
   };
+
 
   if (isLoading) {
     return (
@@ -135,71 +186,100 @@ export default function ProductDetails() {
                   {product.description}
                 </p>
 
-                {product.sizes && product.sizes.length > 0 && (
-                <div className="mb-8">
+                 {/* Quantity Selector - Moved to Top */}
+                  <div className="mb-8 p-4 bg-gray-50 rounded-xl border border-gray-100">
                     <h3 className="text-sm font-bold text-gray-900 uppercase tracking-wider mb-4">
-                      Select Size
+                      Quantity (Items to Purchase)
                     </h3>
-                    <div className="flex flex-wrap gap-3">
-                      {product.sizes
-                        .flatMap((s) => s.split(",").map((i) => i.trim()))
-                        .filter(Boolean)
-                        .map((size) => (
-                          <button
-                            key={size}
-                            onClick={() => setSelectedSize(size)}
-                            className={`min-w-[3rem] h-12 px-4 flex items-center justify-center rounded-lg border text-sm font-medium transition-all duration-200 ${
-                              selectedSize === size
-                                ? "border-gray-900 bg-gray-900 text-white shadow-md transform scale-105"
-                                : "border-gray-200 text-gray-700 hover:border-gray-900 hover:text-gray-900 bg-white"
-                            }`}
-                          >
-                            {size.toUpperCase()}
-                          </button>
-                        ))}
+                    <div className="flex items-center gap-4">
+                      <button
+                        onClick={() => handleQuantityChange(-1)}
+                        className="p-2 rounded-full border border-gray-200 hover:bg-white hover:border-gray-300 transition-colors"
+                      >
+                        <Minus className="w-4 h-4" />
+                      </button>
+                      <span className="text-2xl font-bold w-12 text-center text-rose-600">{quantity}</span>
+                      <button
+                        onClick={() => handleQuantityChange(1)}
+                        className="p-2 rounded-full border border-gray-200 hover:bg-white hover:border-gray-300 transition-colors"
+                      >
+                        <Plus className="w-4 h-4" />
+                      </button>
                     </div>
                   </div>
-                )}
-              </div>
 
-              {/* Quantity Selector */}
-              <div className="mb-8">
-                <h3 className="text-sm font-bold text-gray-900 uppercase tracking-wider mb-4">
-                  Quantity
-                </h3>
-                <div className="flex items-center gap-4">
-                  <button
-                    onClick={() => handleQuantityChange(-1)}
-                    className="p-2 rounded-full border border-gray-200 hover:bg-gray-100 transition-colors"
-                  >
-                    <Minus className="w-4 h-4" />
-                  </button>
-                  <span className="text-xl font-bold w-8 text-center">{quantity}</span>
-                  <button
-                    onClick={() => handleQuantityChange(1)}
-                    className="p-2 rounded-full border border-gray-200 hover:bg-gray-100 transition-colors"
-                  >
-                    <Plus className="w-4 h-4" />
-                  </button>
+                {/* Per-Item Selection Loop */}
+                <div className="space-y-6 max-h-[500px] overflow-y-auto pr-2 custom-scrollbar">
+                    {selections.map((selection, index) => (
+                        <div key={index} className="p-5 border border-gray-200 rounded-xl relative">
+                             <div className="absolute -top-3 left-4 bg-white px-2 text-sm font-bold text-rose-500">
+                                Item #{index + 1}
+                            </div>
+                            
+                            {product.sizes && product.sizes.length > 0 && (
+                            <div className="mb-4">
+                                <h3 className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">
+                                Select Size
+                                </h3>
+                                <div className="flex flex-wrap gap-2">
+                                {product.sizes
+                                    .flatMap((s) => s.split(",").map((i) => i.trim()))
+                                    .filter(Boolean)
+                                    .map((size) => (
+                                    <button
+                                        key={size}
+                                        onClick={() => handleSelectionChange(index, 'size', size)}
+                                        className={`min-w-[2.5rem] h-10 px-3 flex items-center justify-center rounded-md border text-xs font-bold transition-all duration-200 ${
+                                          selection.size === size
+                                            ? "border-gray-900 bg-gray-900 text-white shadow-md scale-105"
+                                            : "border-gray-200 text-gray-600 hover:border-gray-400 bg-white"
+                                        }`}
+                                    >
+                                        {size.toUpperCase()}
+                                    </button>
+                                    ))}
+                                </div>
+                            </div>
+                            )}
+                            
+                            {product.colors && product.colors.length > 0 && (
+                            <div>
+                                <h3 className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">
+                                Select Color
+                                </h3>
+                                <div className="flex flex-wrap gap-2">
+                                {product.colors.map((color) => (
+                                    <button
+                                        key={color}
+                                        onClick={() => handleSelectionChange(index, 'color', color)}
+                                        className={`min-w-[2.5rem] h-10 px-3 flex items-center justify-center rounded-md border text-xs font-bold transition-all duration-200 ${
+                                          selection.color === color
+                                            ? "border-gray-900 bg-gray-900 text-white shadow-md scale-105"
+                                            : "border-gray-200 text-gray-600 hover:border-gray-400 bg-white"
+                                        }`}
+                                    >
+                                        {color}
+                                    </button>
+                                    ))}
+                                </div>
+                            </div>
+                            )}
+                        </div>
+                    ))}
                 </div>
+
               </div>
 
-              <div className="border-t border-gray-100 pt-8 mt-8">
+              <div className="border-t border-gray-100 pt-8 mt-8 space-y-3">
                 <button
                   onClick={handleAddToCart}
-                  disabled={
-                    (product.sizes &&
-                    product.sizes.length > 0 &&
-                    !selectedSize) || isAdded
-                  }
+                  disabled={!areAllSelectionsComplete() || isAdded}
                   className={`w-full py-4 rounded-full text-white font-bold text-lg flex items-center justify-center gap-3 transition-all ${
-                    product.sizes &&
-                    product.sizes.length > 0 &&
-                    !selectedSize
+                    (!areAllSelectionsComplete())
                       ? "bg-gray-300 cursor-not-allowed"
                       : isAdded 
                         ? "bg-green-600 shadow-none scale-95"
-                        : "bg-gray-900 hover:bg-rose-600 shadow-lg hover:shadow-xl hover:-translate-y-1"
+                        : "bg-gray-900 hover:bg-gray-800 shadow-md hover:shadow-lg"
                   }`}
                 >
                   {isAdded ? (
@@ -213,11 +293,22 @@ export default function ProductDetails() {
                     </>
                   )}
                 </button>
-                {product.sizes &&
-                  product.sizes.length > 0 &&
-                  !selectedSize && (
-                    <p className="text-red-500 text-sm mt-3 text-center">
-                      Please select a size to continue
+
+                <button
+                  onClick={handleBuyNow}
+                  disabled={!areAllSelectionsComplete()}
+                  className={`w-full py-4 rounded-full text-white font-bold text-lg flex items-center justify-center gap-3 transition-all ${
+                    (!areAllSelectionsComplete())
+                      ? "bg-rose-200 cursor-not-allowed"
+                      : "bg-rose-600 hover:bg-rose-700 shadow-md hover:shadow-lg hover:-translate-y-1"
+                  }`}
+                >
+                  Buy Now
+                </button>
+
+                {!areAllSelectionsComplete() && (
+                    <p className="text-rose-500 text-sm mt-3 text-center">
+                      Please select all options for each item to continue
                     </p>
                   )}
               </div>

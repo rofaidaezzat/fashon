@@ -14,10 +14,17 @@ const ProductCard = ({ product }: ProductCardProps) => {
     const [isAdded, setIsAdded] = useState(false);
     const dispatch = useDispatch();
 
-    const handleAddToCart = () => {
-        dispatch(addToCart({ product }));
-        setIsAdded(true);
-        setTimeout(() => setIsAdded(false), 2000);
+    const hasOptions = (product.sizes && product.sizes.length > 0) || (product.colors && product.colors.length > 0);
+
+    const handleAction = () => {
+        if (hasOptions) {
+            // Navigate to details to select options
+             window.location.href = `/product/${product._id}`;
+        } else {
+            dispatch(addToCart({ product, selectedColor: "Default", selectedSize: "Default" }));
+            setIsAdded(true);
+            setTimeout(() => setIsAdded(false), 2000);
+        }
     };
 
     const nextImage = (e: React.MouseEvent) => {
@@ -75,22 +82,24 @@ const ProductCard = ({ product }: ProductCardProps) => {
 
                 {/* Overlay Buttons */}
                 <div className="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center gap-2 pointer-events-none">
-                    <Link to={`/product/${product._id}`}>
-                        <button className="bg-white text-gray-900 p-3 rounded-full hover:bg-rose-500 hover:text-white transition-colors transform translate-y-4 group-hover:translate-y-0 duration-300 pointer-events-auto">
-                            <Eye className="w-5 h-5" />
-                        </button>
-                    </Link>
+                    {!hasOptions && (
+                        <Link to={`/product/${product._id}`}>
+                            <button className="bg-white text-gray-900 p-3 rounded-full hover:bg-rose-500 hover:text-white transition-colors transform translate-y-4 group-hover:translate-y-0 duration-300 pointer-events-auto">
+                                <Eye className="w-5 h-5" />
+                            </button>
+                        </Link>
+                    )}
                     <button
-                        onClick={handleAddToCart}
+                        onClick={handleAction}
                         disabled={isAdded}
                         className={`p-3 rounded-full transition-all transform translate-y-4 group-hover:translate-y-0 duration-300 delay-75 pointer-events-auto ${
                             isAdded 
                             ? "bg-green-500 text-white" 
-                            : "bg-white text-gray-900 hover:bg-green-500 hover:text-white"
+                            : "bg-white text-gray-900 hover:bg-rose-500 hover:text-white"
                         }`}
-                        title="Add to Cart"
+                        title={hasOptions ? "Select Options" : "Add to Cart"}
                     >
-                        <ShoppingCart className="w-5 h-5" />
+                        {hasOptions ? <Eye className="w-5 h-5" /> : <ShoppingCart className="w-5 h-5" />}
                     </button>
                 </div>
             </div>
@@ -106,7 +115,7 @@ const ProductCard = ({ product }: ProductCardProps) => {
                     </span>
                 </div>
                 <button
-                    onClick={handleAddToCart}
+                    onClick={handleAction}
                     disabled={isAdded}
                     className={`w-full mt-4 py-2.5 rounded-lg text-sm font-medium transition-colors flex items-center justify-center gap-2 ${
                         isAdded 
@@ -114,7 +123,7 @@ const ProductCard = ({ product }: ProductCardProps) => {
                         : "bg-gray-900 text-white hover:bg-rose-600"
                     }`}
                 >
-                    {isAdded ? "Added!" : "Add to Cart"}
+                    {isAdded ? "Added!" : (hasOptions ? "Select Options" : "Add to Cart")}
                 </button>
             </div>
         </div>

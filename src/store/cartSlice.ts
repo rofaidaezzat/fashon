@@ -5,6 +5,7 @@ export interface CartItem {
     product: IProduct;
     quantity: number;
     selectedSize?: string;
+    selectedColor?: string;
 }
 
 interface CartState {
@@ -31,35 +32,35 @@ const cartSlice = createSlice({
     name: 'cart',
     initialState,
     reducers: {
-        addToCart: (state, action: PayloadAction<{ product: IProduct; quantity?: number; selectedSize?: string }>) => {
-            const { product, quantity = 1, selectedSize } = action.payload;
+        addToCart: (state, action: PayloadAction<{ product: IProduct; quantity?: number; selectedSize?: string; selectedColor?: string }>) => {
+            const { product, quantity = 1, selectedSize, selectedColor } = action.payload;
             const existingItem = state.items.find(
-                (item) => item.product._id === product._id && item.selectedSize === selectedSize
+                (item) => item.product._id === product._id && item.selectedSize === selectedSize && item.selectedColor === selectedColor
             );
 
             if (existingItem) {
                 existingItem.quantity += quantity;
             } else {
-                state.items.push({ product, quantity, selectedSize });
+                state.items.push({ product, quantity, selectedSize, selectedColor });
             }
             localStorage.setItem('cart', JSON.stringify(state.items)); // Persist
         },
-        removeFromCart: (state, action: PayloadAction<{ productId: string; selectedSize?: string }>) => {
-            const { productId, selectedSize } = action.payload;
+        removeFromCart: (state, action: PayloadAction<{ productId: string; selectedSize?: string; selectedColor?: string }>) => {
+            const { productId, selectedSize, selectedColor } = action.payload;
             state.items = state.items.filter(
-                (item) => !(item.product._id === productId && item.selectedSize === selectedSize)
+                (item) => !(item.product._id === productId && item.selectedSize === selectedSize && item.selectedColor === selectedColor)
             );
             localStorage.setItem('cart', JSON.stringify(state.items)); // Persist
         },
-        updateQuantity: (state, action: PayloadAction<{ productId: string; quantity: number; selectedSize?: string }>) => {
-            const { productId, quantity, selectedSize } = action.payload;
+        updateQuantity: (state, action: PayloadAction<{ productId: string; quantity: number; selectedSize?: string; selectedColor?: string }>) => {
+            const { productId, quantity, selectedSize, selectedColor } = action.payload;
             if (quantity <= 0) {
                 state.items = state.items.filter(
-                    (item) => !(item.product._id === productId && item.selectedSize === selectedSize)
+                    (item) => !(item.product._id === productId && item.selectedSize === selectedSize && item.selectedColor === selectedColor)
                 );
             } else {
                 const item = state.items.find(
-                    (item) => item.product._id === productId && item.selectedSize === selectedSize
+                    (item) => item.product._id === productId && item.selectedSize === selectedSize && item.selectedColor === selectedColor
                 );
                 if (item) {
                     item.quantity = quantity;

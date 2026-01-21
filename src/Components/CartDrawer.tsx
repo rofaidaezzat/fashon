@@ -47,12 +47,13 @@ const CartDrawer = ({ isOpen, onClose }: CartDrawerProps) => {
   const handleUpdateQuantity = (
     productId: string,
     quantity: number,
-    selectedSize?: string
+    selectedSize?: string,
+    selectedColor?: string
   ) => {
     if (quantity < 1) {
-      dispatch(removeFromCart({ productId, selectedSize }));
+      dispatch(removeFromCart({ productId, selectedSize, selectedColor }));
     } else {
-      dispatch(updateQuantity({ productId, quantity, selectedSize }));
+      dispatch(updateQuantity({ productId, quantity, selectedSize, selectedColor }));
     }
   };
 
@@ -71,7 +72,7 @@ const CartDrawer = ({ isOpen, onClose }: CartDrawerProps) => {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             onClick={onClose}
-            className="fixed inset-0 bg-black/40 backdrop-blur-sm z-[100]"
+            className="fixed inset-0 bg-black/60 backdrop-blur-sm z-[100]"
           />
 
           {/* Drawer */}
@@ -80,35 +81,45 @@ const CartDrawer = ({ isOpen, onClose }: CartDrawerProps) => {
             animate={{ x: 0 }}
             exit={{ x: "100%" }}
             transition={{ type: "spring", damping: 25, stiffness: 200 }}
-            className="fixed top-0 right-0 h-full w-full max-w-md bg-white shadow-2xl z-[110] flex flex-col"
+            className="fixed top-0 right-0 h-full w-full max-w-[500px] bg-white shadow-2xl z-[110] flex flex-col"
           >
             {/* Header */}
-            <div className="flex items-center justify-between p-4 border-b border-gray-100">
-              <h2 className="text-lg font-bold text-gray-900 flex items-center gap-2">
+            <div className="flex items-center justify-between p-6 border-b border-gray-100 bg-white">
+              <h2 className="text-xl font-bold text-gray-900 flex items-center gap-2">
                 <ShoppingBag className="w-5 h-5" />
-                Your Cart ({safeCartItems.length})
+                Shopping Cart
+                <span className="text-sm font-medium text-gray-500 bg-gray-100 px-2 py-1 rounded-full ml-2">
+                  {safeCartItems.length} items
+                </span>
               </h2>
               <button
                 onClick={onClose}
-                className="p-2 hover:bg-gray-100 rounded-full transition-colors"
+                className="p-2 hover:bg-gray-100 rounded-full transition-colors group"
                 aria-label="Close cart"
               >
-                <X className="w-5 h-5 text-gray-500" />
+                <X className="w-6 h-6 text-gray-400 group-hover:text-gray-900" />
               </button>
             </div>
 
             {/* Body */}
-            <div className="flex-1 overflow-y-auto p-4 space-y-4">
+            <div className="flex-1 overflow-y-auto bg-gray-50/50 p-6 space-y-6">
               {safeCartItems.length === 0 ? (
-                <div className="h-full flex flex-col items-center justify-center text-center space-y-4 text-gray-500">
-                  <ShoppingBag className="w-16 h-16 opacity-20" />
-                  <p className="text-lg font-medium">Your cart is empty</p>
+                <div className="h-full flex flex-col items-center justify-center text-center space-y-6">
+                  <div className="w-24 h-24 bg-gray-100 rounded-full flex items-center justify-center">
+                    <ShoppingBag className="w-10 h-10 text-gray-400" />
+                  </div>
+                  <div>
+                    <h3 className="text-xl font-bold text-gray-900 mb-2">Your cart is empty</h3>
+                    <p className="text-gray-500 max-w-[200px] mx-auto">
+                      Looks like you haven't added any items to your cart yet.
+                    </p>
+                  </div>
                   <button
                     onClick={() => {
                       onClose();
                       navigate("/shop");
                     }}
-                    className="text-rose-600 font-semibold hover:underline"
+                    className="px-8 py-3 bg-gray-900 text-white font-bold rounded-full hover:bg-rose-600 transition-colors shadow-lg hover:shadow-xl hover:-translate-y-1"
                   >
                     Start Shopping
                   </button>
@@ -116,11 +127,11 @@ const CartDrawer = ({ isOpen, onClose }: CartDrawerProps) => {
               ) : (
                 safeCartItems.map((item) => (
                   <div
-                    key={`${item.product._id}-${item.selectedSize}`}
-                    className="flex gap-4 p-3 rounded-xl bg-gray-50/50 border border-gray-100 group"
+                    key={`${item.product._id}-${item.selectedSize}-${item.selectedColor}`}
+                    className="flex gap-5 p-4 rounded-2xl bg-white border border-gray-100 shadow-sm hover:shadow-md transition-shadow group relative overflow-hidden"
                   >
                     {/* Product Image */}
-                    <div className="w-20 h-24 flex-shrink-0 bg-white rounded-lg overflow-hidden border border-gray-100">
+                    <div className="w-24 h-32 flex-shrink-0 bg-gray-100 rounded-xl overflow-hidden border border-gray-100">
                       <img
                         src={item.product.images[0]}
                         alt={item.product.name}
@@ -129,10 +140,10 @@ const CartDrawer = ({ isOpen, onClose }: CartDrawerProps) => {
                     </div>
 
                     {/* Product Details */}
-                    <div className="flex-1 flex flex-col justify-between">
+                    <div className="flex-1 flex flex-col justify-between py-1">
                       <div>
-                        <div className="flex justify-between items-start">
-                          <h3 className="text-sm font-bold text-gray-900 line-clamp-2">
+                        <div className="flex justify-between items-start gap-4">
+                          <h3 className="text-base font-bold text-gray-900 leading-snug">
                             {item.product.name}
                           </h3>
                           <button
@@ -141,49 +152,68 @@ const CartDrawer = ({ isOpen, onClose }: CartDrawerProps) => {
                                 removeFromCart({
                                   productId: item.product._id,
                                   selectedSize: item.selectedSize,
+                                  selectedColor: item.selectedColor,
                                 })
                               )
                             }
-                            className="text-gray-400 hover:text-rose-500 p-1"
+                            className="text-gray-400 hover:text-red-500 transition-colors p-1 -mr-2 -mt-2"
+                            aria-label="Remove item"
                           >
                             <Trash2 className="w-4 h-4" />
                           </button>
                         </div>
-                        <p className="text-xs text-gray-500 mt-1">
-                          Size: <span className="font-medium text-gray-900">{item.selectedSize}</span> | 
-                          <span className="ml-1 text-rose-600 font-bold">EGP {item.product.price}</span>
-                        </p>
+                        
+                        <div className="flex flex-wrap gap-2 mt-2">
+                          {item.selectedSize && (
+                            <div className="inline-flex items-center px-2 py-1 rounded bg-gray-100 border border-gray-200 text-xs font-medium text-gray-600">
+                              Size: <span className="text-gray-900 ml-1">{item.selectedSize}</span>
+                            </div>
+                          )}
+                          {item.selectedColor && item.selectedColor !== "Default" && (
+                            <div className="inline-flex items-center px-2 py-1 rounded bg-gray-100 border border-gray-200 text-xs font-medium text-gray-600">
+                              Color: <span className="text-gray-900 ml-1">{item.selectedColor}</span>
+                            </div>
+                          )}
+                        </div>
+                        
+                        <div className="mt-2 font-bold text-rose-600">
+                          EGP {item.product.price.toLocaleString()}
+                        </div>
                       </div>
 
                       {/* Quantity Controls */}
-                      <div className="flex items-center gap-3">
-                        <button
-                          onClick={() =>
-                            handleUpdateQuantity(
-                              item.product._id,
-                              item.quantity - 1,
-                              item.selectedSize
-                            )
-                          }
-                          className="p-1 rounded-md bg-white border border-gray-200 hover:border-gray-400 transition-colors"
-                        >
-                          <Minus className="w-3 h-3" />
-                        </button>
-                        <span className="text-sm font-semibold w-6 text-center">
-                          {item.quantity}
-                        </span>
-                        <button
-                          onClick={() =>
-                            handleUpdateQuantity(
-                              item.product._id,
-                              item.quantity + 1,
-                              item.selectedSize
-                            )
-                          }
-                          className="p-1 rounded-md bg-white border border-gray-200 hover:border-gray-400 transition-colors"
-                        >
-                          <Plus className="w-3 h-3" />
-                        </button>
+                      <div className="flex items-center gap-4 mt-3">
+                        <div className="flex items-center bg-gray-50 rounded-lg border border-gray-200 p-1">
+                          <button
+                            onClick={() =>
+                              handleUpdateQuantity(
+                                item.product._id,
+                                item.quantity - 1,
+                                item.selectedSize,
+                                item.selectedColor
+                              )
+                            }
+                            className="w-7 h-7 flex items-center justify-center rounded-md bg-white border border-gray-200 text-gray-600 hover:border-gray-400 hover:text-rose-600 transition-all shadow-sm"
+                          >
+                            <Minus className="w-3 h-3" />
+                          </button>
+                          <span className="text-sm font-bold w-10 text-center text-gray-900">
+                            {item.quantity}
+                          </span>
+                          <button
+                            onClick={() =>
+                              handleUpdateQuantity(
+                                item.product._id,
+                                item.quantity + 1,
+                                item.selectedSize,
+                                item.selectedColor
+                              )
+                            }
+                            className="w-7 h-7 flex items-center justify-center rounded-md bg-white border border-gray-200 text-gray-600 hover:border-gray-400 hover:text-rose-600 transition-all shadow-sm"
+                          >
+                            <Plus className="w-3 h-3" />
+                          </button>
+                        </div>
                       </div>
                     </div>
                   </div>
@@ -193,19 +223,25 @@ const CartDrawer = ({ isOpen, onClose }: CartDrawerProps) => {
 
             {/* Footer */}
             {safeCartItems.length > 0 && (
-              <div className="border-t border-gray-100 p-4 bg-white space-y-4">
-                <div className="flex items-center justify-between text-base font-medium text-gray-900">
-                  <p>Subtotal</p>
-                  <p>EGP {totalAmount.toFixed(2)}</p>
+              <div className="border-t border-gray-100 p-6 bg-white space-y-4 shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.05)]">
+                <div className="space-y-2">
+                  <div className="flex items-center justify-between text-gray-500">
+                    <span>Subtotal</span>
+                    <span>EGP {totalAmount.toLocaleString()}</span>
+                  </div>
+                  <div className="flex items-center justify-between text-lg font-bold text-gray-900 pt-2 border-t border-gray-100">
+                    <span>Total</span>
+                    <span>EGP {totalAmount.toLocaleString()}</span>
+                  </div>
                 </div>
-                <p className="text-xs text-gray-500 text-center">
+                <p className="text-xs text-center text-gray-400">
                   Shipping and taxes calculated at checkout.
                 </p>
                 <button
                   onClick={handleCheckout}
-                  className="w-full flex items-center justify-center rounded-full border border-transparent bg-gray-900 px-6 py-3 text-base font-medium text-white shadow-sm hover:bg-gray-800 transition-all hover:shadow-lg active:scale-[0.98]"
+                  className="w-full flex items-center justify-center rounded-full bg-gray-900 py-4 text-base font-bold text-white shadow-lg hover:bg-rose-600 hover:shadow-rose-500/25 transition-all hover:-translate-y-1 active:scale-[0.98]"
                 >
-                  Checkout
+                  Proceed to Checkout
                 </button>
               </div>
             )}
