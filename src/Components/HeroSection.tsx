@@ -4,7 +4,6 @@ import heroImg2 from "@/assets/photo_2026-01-21_17-33-58.jpg";
 import heroImg3 from "@/assets/photo_2026-01-21_17-34-20.jpg";
 import ImageWithFallback from "./ImageWithFallback";
 import { useState, useEffect } from "react";
-import logo from "../assets/logo.png";
 import { useLanguage } from "../context/LanguageContext";
 
 const heroImages = [heroImg1, heroImg2, heroImg3];

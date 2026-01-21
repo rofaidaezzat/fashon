@@ -13,7 +13,6 @@ import ImageWithFallback from "./ImageWithFallback";
 import { useLanguage } from "../context/LanguageContext";
 
 const Footer = () => {
-  const currentYear = new Date().getFullYear();
   const { t } = useLanguage();
 
   return (
