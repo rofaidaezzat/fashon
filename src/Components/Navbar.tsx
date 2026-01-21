@@ -29,33 +29,38 @@ const Navbar = () => {
       <div className="container mx-auto px-6 py-3">
         <div className="flex items-center justify-between">
           {/* Logo */}
-          <Link to="/" className="flex items-center space-x-2 group">
+          <Link to="/" className="flex items-center space-x-2 group relative z-50">
             <ImageWithFallback
               src={logo}
               alt="Fashon Logo"
-              className="h-14 w-auto object-contain"
+              className="h-12 w-auto object-contain transition-transform duration-300 group-hover:scale-105"
             />
           </Link>
 
-          {/* Desktop Navigation */}
-          <div className="hidden md:flex items-center space-x-8">
+          {/* Desktop Navigation - Centered */}
+          <div className="hidden md:flex items-center justify-center absolute left-1/2 top-1/2 -translate-y-1/2 -translate-x-1/2 space-x-8">
             {navLinks.map((link) => (
               <Link
                 key={link.path}
                 to={link.path}
-                className={`text-sm font-medium tracking-wide transition-all duration-300 hover:text-rose-500 uppercase ${
-                  isActive(link.path) ? "text-rose-500" : "text-gray-800"
+                className={`text-sm font-medium tracking-[0.15em] transition-colors duration-300 uppercase relative group py-1 ${
+                  isActive(link.path) ? "text-rose-600" : "text-gray-900 hover:text-rose-600"
                 }`}
               >
                 {link.name}
+                <span className={`absolute bottom-0 left-0 w-full h-0.5 bg-rose-600 transform origin-left transition-transform duration-300 ${
+                  isActive(link.path) ? "scale-x-100" : "scale-x-0 group-hover:scale-x-100"
+                }`}></span>
               </Link>
             ))}
+          </div>
             
-            {/* Desktop Cart */}
-            <button onClick={() => setIsCartOpen(true)} className="relative group p-2">
-              <ShoppingBag className="w-6 h-6 text-gray-800 group-hover:text-rose-500 transition-colors" />
+          {/* Desktop Actions (Cart) */}
+          <div className="hidden md:flex items-center gap-6">
+            <button onClick={() => setIsCartOpen(true)} className="relative group p-2 hover:bg-gray-50 rounded-full transition-colors">
+              <ShoppingBag className="w-5 h-5 text-gray-900 group-hover:text-rose-600 transition-colors" />
               {cartCount > 0 && (
-                <span className="absolute top-0 right-0 bg-rose-500 text-white text-[10px] font-bold w-4 h-4 flex items-center justify-center rounded-full">
+                <span className="absolute top-0 right-0 bg-rose-600 text-white text-[10px] font-bold w-4 h-4 flex items-center justify-center rounded-full ring-2 ring-white">
                   {cartCount}
                 </span>
               )}
@@ -64,10 +69,10 @@ const Navbar = () => {
 
           {/* Mobile Actions */}
           <div className="flex items-center gap-4 md:hidden">
-            <button onClick={() => setIsCartOpen(true)} className="relative group p-2">
-              <ShoppingBag className="w-6 h-6 text-gray-800 transition-colors" />
+            <button onClick={() => setIsCartOpen(true)} className="relative group p-2 hover:bg-gray-50 rounded-full transition-colors">
+              <ShoppingBag className="w-5 h-5 text-gray-900 transition-colors" />
               {cartCount > 0 && (
-                <span className="absolute top-0 right-0 bg-rose-500 text-white text-[10px] font-bold w-4 h-4 flex items-center justify-center rounded-full">
+                <span className="absolute top-0 right-0 bg-rose-600 text-white text-[10px] font-bold w-4 h-4 flex items-center justify-center rounded-full ring-2 ring-white">
                   {cartCount}
                 </span>
               )}
@@ -76,7 +81,7 @@ const Navbar = () => {
             {/* Mobile Menu Button */}
             <button
               onClick={() => setIsMenuOpen(!isMenuOpen)}
-              className="p-2 rounded-lg text-gray-600 hover:bg-gray-100 transition-colors"
+              className="p-2 rounded-full text-gray-900 hover:bg-gray-50 transition-colors"
             >
               {isMenuOpen ? (
                 <X className="w-6 h-6" />

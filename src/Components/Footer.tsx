@@ -27,7 +27,7 @@ const Footer = () => {
                <div className="bg-white p-1 rounded-full">
                   <ImageWithFallback src={logo} alt="Fashon Logo" className="h-10 w-10 object-contain rounded-full" />
                </div>
-               <span className="text-2xl font-bold tracking-tight text-white">Fashon</span>
+               <span className="text-2xl font-bold tracking-tight text-white">FZ DESIGNER</span>
             </Link>
             <p className="text-gray-400 text-sm leading-relaxed max-w-xs">
               Elegance is not standing out, but being remembered. Discover timeless fashion that expresses your unique style.
@@ -49,13 +49,12 @@ const Footer = () => {
 
           {/* Quick Links */}
           <div>
-            <h3 className="text-lg font-bold mb-6 text-white uppercase tracking-wider text-sm">Shop</h3>
+            <h3 className="text-lg font-bold mb-6 text-white uppercase tracking-wider text-sm">Explore</h3>
             <ul className="space-y-3">
               {[
-                { name: "New Arrivals", path: "/shop" },
-                { name: "Best Sellers", path: "/shop" },
-                { name: "Clothing", path: "/shop" },
-                { name: "Accessories", path: "/shop" },
+                { name: "Home", path: "/" },
+                { name: "Shop Collection", path: "/shop" },
+                { name: "About Us", path: "/about-us" },
               ].map((link) => (
                 <li key={link.name}>
                   <Link
@@ -72,12 +71,10 @@ const Footer = () => {
 
           {/* Help */}
           <div>
-            <h3 className="text-lg font-bold mb-6 text-white uppercase tracking-wider text-sm">Help & Info</h3>
+            <h3 className="text-lg font-bold mb-6 text-white uppercase tracking-wider text-sm">Customer Care</h3>
             <ul className="space-y-3">
                {[
-                { name: "Track Order", path: "#" },
-                { name: "Returns & Exchanges", path: "#" },
-                { name: "Shipping Info", path: "#" },
+                { name: "My Cart", path: "/order" },
                 { name: "Contact Us", path: "/contact-us" },
               ].map((link) => (
                 <li key={link.name}>
