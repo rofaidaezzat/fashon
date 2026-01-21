@@ -1,7 +1,7 @@
 import { useParams, Link, useNavigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { getProductById } from "../api/products";
-import { ArrowLeft, ShoppingCart, Minus, Plus, Info, Ruler, X } from "lucide-react";
+import { ArrowLeft, ShoppingCart, Minus, Plus, Ruler, X } from "lucide-react";
 import { useState } from "react";
 import { useDispatch } from "react-redux";
 import { addToCart } from "../store/cartSlice";
