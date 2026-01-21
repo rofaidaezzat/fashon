@@ -1,17 +1,19 @@
 import { useParams, Link, useNavigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { getProductById } from "../api/products";
-import { ArrowLeft, ShoppingCart, Minus, Plus } from "lucide-react";
+import { ArrowLeft, ShoppingCart, Minus, Plus, Info, Ruler, X } from "lucide-react";
 import { useState } from "react";
 import { useDispatch } from "react-redux";
 import { addToCart } from "../store/cartSlice";
 import ImageWithFallback from "../Components/ImageWithFallback";
+import sizeGuideImage from "../assets/photo_2026-01-21_16-13-32.jpg";
 
 export default function ProductDetails() {
   const { id } = useParams<{ id: string }>();
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [quantity, setQuantity] = useState(1);
   const [selections, setSelections] = useState<{size: string, color: string}[]>([{size: "", color: ""}]);
+  const [showSizeGuide, setShowSizeGuide] = useState(false);
   
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -213,15 +215,28 @@ export default function ProductDetails() {
                 <div className="space-y-6 max-h-[500px] overflow-y-auto pr-2 custom-scrollbar">
                     {selections.map((selection, index) => (
                         <div key={index} className="p-5 border border-gray-200 rounded-xl relative">
-                             <div className="absolute -top-3 left-4 bg-white px-2 text-sm font-bold text-rose-500">
-                                Item #{index + 1}
+
+                            <div className="absolute -top-3 left-4 bg-white px-2 text-sm font-bold text-rose-500 flex items-center gap-2">
+                                <span>Item #{index + 1}</span>
                             </div>
                             
                             {product.sizes && product.sizes.length > 0 && (
                             <div className="mb-4">
-                                <h3 className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">
-                                Select Size
-                                </h3>
+                                <div className="flex items-center gap-2 mb-2">
+                                    <h3 className="text-xs font-bold text-gray-500 uppercase tracking-wider">
+                                    Select Size
+                                    </h3>
+                                    {/* Size Guide Trigger */}
+                                    <button
+                                      type="button"
+                                      onClick={() => setShowSizeGuide(true)}
+                                      className="flex items-center gap-1 text-xs font-medium text-rose-600 hover:text-rose-700 transition-colors group"
+                                      title="Open Size Guide"
+                                    >
+                                      <Ruler className="w-4 h-4" />
+                                      <span className="underline decoration-rose-200 underline-offset-2 group-hover:decoration-rose-600 transition-all">Size Guide</span>
+                                    </button>
+                                </div>
                                 <div className="flex flex-wrap gap-2">
                                 {product.sizes
                                     .flatMap((s) => s.split(",").map((i) => i.trim()))
@@ -317,6 +332,31 @@ export default function ProductDetails() {
           </div>
         </div>
       </div>
+      {/* Size Guide Modal */}
+      {showSizeGuide && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm animate-in fade-in duration-200">
+          <div className="relative bg-white rounded-2xl shadow-2xl max-w-4xl w-full max-h-[90vh] overflow-hidden flex flex-col animate-in zoom-in-95 duration-200">
+            <div className="flex items-center justify-between p-4 border-b">
+              <h3 className="text-lg font-bold text-gray-900">Size Guide</h3>
+              <button
+                onClick={() => setShowSizeGuide(false)}
+                className="p-2 hover:bg-gray-100 rounded-full transition-colors"
+              >
+                <X className="w-5 h-5 text-gray-500" />
+              </button>
+            </div>
+            <div className="p-4 overflow-auto bg-gray-50 flex items-center justify-center min-h-[300px]">
+              <div className="relative w-full h-full max-h-[70vh] flex items-center justify-center">
+                 <img
+                    src={sizeGuideImage}
+                    alt="Size Guide Reference"
+                    className="max-w-full max-h-full object-contain rounded-lg shadow-sm"
+                  />
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
