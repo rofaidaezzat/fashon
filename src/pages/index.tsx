@@ -192,36 +192,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Newsletter */}
-      <section className="py-24 bg-rose-50">
-        <div className="container mx-auto px-6">
-          <div className="max-w-3xl mx-auto text-center">
-            <h2 className="text-4xl font-bold text-gray-900 mb-6">
-              Join the Fashon Club
-            </h2>
-            <p className="text-gray-600 text-lg mb-10">
-              Subscribe to get special offers, free giveaways, and
-              once-in-a-lifetime deals.
-            </p>
-            <form
-              className="flex flex-col sm:flex-row gap-4 max-w-md mx-auto"
-              onSubmit={(e) => e.preventDefault()}
-            >
-              <input
-                type="email"
-                placeholder="Enter your email"
-                className="flex-1 px-6 py-4 bg-white border-0 text-gray-900 placeholder-gray-400 focus:ring-2 focus:ring-rose-500 transition-all shadow-sm"
-              />
-              <button
-                type="submit"
-                className="px-8 py-4 bg-gray-900 text-white font-bold hover:bg-gray-800 transition-colors shadow-lg"
-              >
-                Subscribe
-              </button>
-            </form>
-          </div>
-        </div>
-      </section>
+
     </main>
   );
 }
