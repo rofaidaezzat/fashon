@@ -14,10 +14,9 @@ export default function ProductDetails() {
   const [quantity, setQuantity] = useState(1);
   const [selections, setSelections] = useState<{size: string, color: string}[]>([{size: "", color: ""}]);
   const [showSizeGuide, setShowSizeGuide] = useState(false);
-  
+
   const dispatch = useDispatch();
   const navigate = useNavigate();
-
   const { data, isLoading, isError } = useQuery({
     queryKey: ["product", id],
     queryFn: () => getProductById(id!),

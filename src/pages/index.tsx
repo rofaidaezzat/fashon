@@ -1,8 +1,10 @@
 import { Link } from "react-router-dom";
-import { motion } from "framer-motion";
+import { motion, useInView } from "framer-motion";
 import { Mail, CheckCircle, TrendingUp } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
+import { useRef } from "react";
 import { getProducts } from "../api/products";
+import ProductSkeleton from "../Components/ProductSkeleton";
 
 import ProductCard from "../Components/ProductCard";
 import styleInspo1 from "../assets/photo_2026-01-14_14-28-22.jpg";
@@ -13,19 +15,16 @@ import HeroSection from "../Components/HeroSection";
 import ImageWithFallback from "../Components/ImageWithFallback";
 
 export default function Home() {
+  const popularSectionRef = useRef(null);
+  const isInView = useInView(popularSectionRef, { once: true, margin: "-100px" });
+
   const { data, isLoading } = useQuery({
-    queryKey: ["products"],
+    queryKey: ["products", "popular"],
     queryFn: getProducts,
+    enabled: isInView,
   });
 
   const products = data?.data?.slice(0, 3) || [];
-
-  if (isLoading)
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        Loading...
-      </div>
-    );
 
   return (
     <main className="min-h-screen bg-white font-sans text-gray-900">
@@ -58,7 +57,7 @@ export default function Home() {
       </section>
 
       {/* Popular Products (Image 2) */}
-      <section className="py-24 bg-gray-50">
+      <section className="py-24 bg-gray-50" ref={popularSectionRef}>
         <div className="container mx-auto px-6">
           <div className="text-center mb-16">
             <h2 className="text-3xl md:text-4xl font-normal text-gray-800 mb-4">
@@ -68,7 +67,12 @@ export default function Home() {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {products.map((product) => (
+            {isLoading ? (
+               Array.from({ length: 3 }).map((_, index) => (
+                 <ProductSkeleton key={index} />
+               ))
+            ) : (
+              products.map((product) => (
               <motion.div
                 key={product._id}
                 initial={{ opacity: 0, y: 20 }}
@@ -77,7 +81,7 @@ export default function Home() {
               >
                 <ProductCard product={product} />
               </motion.div>
-            ))}
+            )))}
           </div>
 
           <div className="mt-16 text-center">

@@ -2,6 +2,7 @@ import { useState, useMemo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { getProducts } from "../api/products";
 import ProductCard from "../Components/ProductCard";
+import ProductSkeleton from "../Components/ProductSkeleton";
 
 const Shop = () => {
   const [selectedCategory, setSelectedCategory] = useState("All");
@@ -37,12 +38,7 @@ const Shop = () => {
     return result;
   }, [products, selectedCategory, sortOption]);
 
-  if (isLoading)
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        Loading...
-      </div>
-    );
+
   if (error)
     return (
       <div className="min-h-screen flex items-center justify-center">
@@ -106,9 +102,13 @@ const Shop = () => {
           {/* Product Grid - Full Width */}
           <div className="w-full">
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-              {filteredProducts.map((product) => (
-                <ProductCard key={product._id} product={product} />
-              ))}
+              {isLoading
+                ? Array.from({ length: 8 }).map((_, index) => (
+                    <ProductSkeleton key={index} />
+                  ))
+                : filteredProducts.map((product) => (
+                    <ProductCard key={product._id} product={product} />
+                  ))}
             </div>
           </div>
         </div>
