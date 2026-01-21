@@ -5,6 +5,7 @@ import logo from "../assets/logo.png";
 import { useSelector } from "react-redux";
 import { type RootState } from "../store/store";
 import CartDrawer from "./CartDrawer";
+import ImageWithFallback from "./ImageWithFallback";
 
 const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -29,7 +30,7 @@ const Navbar = () => {
         <div className="flex items-center justify-between">
           {/* Logo */}
           <Link to="/" className="flex items-center space-x-2 group">
-            <img
+            <ImageWithFallback
               src={logo}
               alt="Fashon Logo"
               className="h-14 w-auto object-contain"

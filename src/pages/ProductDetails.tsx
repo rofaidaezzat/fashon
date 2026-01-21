@@ -5,6 +5,7 @@ import { ArrowLeft, ShoppingCart, Minus, Plus } from "lucide-react";
 import { useState } from "react";
 import { useDispatch } from "react-redux";
 import { addToCart } from "../store/cartSlice";
+import ImageWithFallback from "../Components/ImageWithFallback";
 
 export default function ProductDetails() {
   const { id } = useParams<{ id: string }>();
@@ -138,7 +139,7 @@ export default function ProductDetails() {
             {/* Image Gallery */}
             <div className="p-8 bg-gray-100 flex flex-col items-center justify-center">
               <div className="aspect-[3/4] w-full max-w-md bg-white rounded-xl overflow-hidden shadow-lg mb-4">
-                <img
+                <ImageWithFallback
                   src={product.images[currentImageIndex]}
                   alt={product.name}
                   className="w-full h-full object-cover"
@@ -155,7 +156,7 @@ export default function ProductDetails() {
                         : "border-transparent hover:border-gray-300"
                     }`}
                   >
-                    <img
+                    <ImageWithFallback
                       src={image}
                       alt={`${product.name} ${idx + 1}`}
                       className="w-full h-full object-cover"

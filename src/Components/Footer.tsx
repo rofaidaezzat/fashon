@@ -9,6 +9,7 @@ import {
   MapPin,
 } from "lucide-react";
 import logo from "../assets/logo.png";
+import ImageWithFallback from "./ImageWithFallback";
 
 const Footer = () => {
   const currentYear = new Date().getFullYear();
@@ -24,7 +25,7 @@ const Footer = () => {
                    Assuming the logo is the one from Navbar. Ideally should have a white version.
                    For now, let's use text or a container for the logo. */}
                <div className="bg-white p-1 rounded-full">
-                  <img src={logo} alt="Fashon Logo" className="h-10 w-10 object-contain rounded-full" />
+                  <ImageWithFallback src={logo} alt="Fashon Logo" className="h-10 w-10 object-contain rounded-full" />
                </div>
                <span className="text-2xl font-bold tracking-tight text-white">Fashon</span>
             </Link>

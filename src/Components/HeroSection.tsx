@@ -1,6 +1,7 @@
 import { motion } from "framer-motion";
 import { ChevronDown } from "lucide-react";
 import heroModel from "@/assets/hero-fashion.png";
+import ImageWithFallback from "./ImageWithFallback";
 
 const HeroSection = () => {
   const scrollToProducts = () => {
@@ -104,7 +105,7 @@ const HeroSection = () => {
           className="relative flex-1 lg:flex-[1.1]"
         >
           <div className="absolute inset-0 bg-gradient-to-t from-background/20 via-transparent to-transparent lg:bg-gradient-to-r lg:from-background/30" />
-          <img
+          <ImageWithFallback
             src={heroModel}
             alt="Fashion model wearing elegant neutral-toned outfit"
             className="h-full w-full object-cover object-top"

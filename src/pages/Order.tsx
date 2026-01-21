@@ -7,6 +7,7 @@ import { useState } from "react";
 import { createOrder, getShippingPrice, type CreateOrderPayload, type OrderItem } from "../api/orders";
 import toast from 'react-hot-toast';
 import { EGYPTIAN_CITIES } from "../data/cities";
+import ImageWithFallback from "../Components/ImageWithFallback";
 
 const Order = () => {
     const dispatch = useDispatch();
@@ -170,7 +171,7 @@ const Order = () => {
                                     key={`${item.product._id}-${item.selectedSize}-${item.selectedColor}-${idx}`}
                                     className="p-6 flex flex-col sm:flex-row items-center gap-6 border-b border-gray-100 last:border-0 hover:bg-gray-50 transition-colors"
                                 >
-                                    <img 
+                                    <ImageWithFallback 
                                         src={item.product.images[0]} 
                                         alt={item.product.name} 
                                         className="w-24 h-24 object-cover rounded-lg"

@@ -6,6 +6,7 @@ import { type RootState } from "../store/store";
 import { removeFromCart, updateQuantity } from "../store/cartSlice";
 import { createPortal } from "react-dom";
 import { useEffect } from "react";
+import ImageWithFallback from "./ImageWithFallback";
 
 interface CartDrawerProps {
   isOpen: boolean;
@@ -132,7 +133,7 @@ const CartDrawer = ({ isOpen, onClose }: CartDrawerProps) => {
                   >
                     {/* Product Image */}
                     <div className="w-24 h-32 flex-shrink-0 bg-gray-100 rounded-xl overflow-hidden border border-gray-100">
-                      <img
+                      <ImageWithFallback
                         src={item.product.images[0]}
                         alt={item.product.name}
                         className="w-full h-full object-cover"

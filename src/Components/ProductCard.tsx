@@ -4,6 +4,7 @@ import { type IProduct } from "../api/products";
 import { Link } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { addToCart } from "../store/cartSlice";
+import ImageWithFallback from "./ImageWithFallback";
 
 interface ProductCardProps {
     product: IProduct;
@@ -44,7 +45,7 @@ const ProductCard = ({ product }: ProductCardProps) => {
     return (
         <div className="group bg-white rounded-xl shadow-sm hover:shadow-xl transition-all duration-300 border border-gray-100 overflow-hidden flex flex-col">
             <div className="relative aspect-[3/4] overflow-hidden bg-gray-100 group">
-                <img
+                <ImageWithFallback
                     src={product.images[currentImageIndex]}
                     alt={product.name}
                     className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"

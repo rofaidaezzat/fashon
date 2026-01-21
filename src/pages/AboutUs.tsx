@@ -1,4 +1,5 @@
 import { Target, Sparkles, TrendingUp, ShieldCheck, Users } from "lucide-react";
+import ImageWithFallback from "../Components/ImageWithFallback";
 
 const AboutUs = () => {
   return (
@@ -6,7 +7,7 @@ const AboutUs = () => {
       {/* Hero Section */}
       <div className="bg-gray-900 text-white py-24 relative overflow-hidden">
         <div className="absolute inset-0 opacity-20">
-          <img
+          <ImageWithFallback
             src="https://images.unsplash.com/photo-1441986300917-64674bd600d8?q=80&w=2070&auto=format&fit=crop"
             alt="Fashion Hero Background"
             className="w-full h-full object-cover"
@@ -30,7 +31,7 @@ const AboutUs = () => {
           {/* Image */}
           <div className="order-2 md:order-1 relative group">
             <div className="absolute -inset-4 bg-rose-100 rounded-3xl transform rotate-3 transition-transform duration-500 group-hover:rotate-6"></div>
-            <img
+            <ImageWithFallback
               src="https://images.unsplash.com/photo-1483985988355-763728e1935b?w=800&fit=crop"
               alt="Fashon Story"
               className="relative rounded-3xl shadow-xl w-full object-cover aspect-[3/4]"

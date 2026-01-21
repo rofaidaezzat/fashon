@@ -10,6 +10,7 @@ import styleInspo2 from "../assets/photo_2026-01-14_14-29-04.jpg";
 import styleInspo3 from "../assets/photo_2026-01-14_14-29-42.jpg";
 import saleModel from "../assets/photo_2026-01-14_14-46-49.jpg";
 import HeroSection from "../Components/HeroSection";
+import ImageWithFallback from "../Components/ImageWithFallback";
 
 export default function Home() {
   const { data, isLoading } = useQuery({
@@ -44,7 +45,7 @@ export default function Home() {
                 key={i}
                 className="aspect-[3/4] w-full overflow-hidden group relative bg-gray-50"
               >
-                <img
+                <ImageWithFallback
                   src={img}
                   alt={`Style Inspo ${i + 1}`}
                   className="w-full h-full object-contain transition-transform duration-700 group-hover:scale-110"
@@ -92,7 +93,7 @@ export default function Home() {
       {/* Promo / Deal Section (New) */}
       <section className="py-20 bg-gray-900 text-white overflow-hidden relative">
         <div className="absolute inset-0 z-0">
-          <img
+          <ImageWithFallback
             src="https://images.unsplash.com/photo-1483985988355-763728e1935b?q=80&w=2070&fit=crop"
             alt="Sale Background"
             className="w-full h-full object-cover opacity-20"
@@ -136,7 +137,7 @@ export default function Home() {
             </div>
             <div className="md:w-1/2 relative">
               <div className="relative z-10">
-                <img
+                <ImageWithFallback
                   src={saleModel}
                   alt="Sale Model"
                   className="w-full max-w-md mx-auto rounded-2xl shadow-2xl border-4 border-white/10"
