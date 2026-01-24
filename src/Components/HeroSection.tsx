@@ -2,6 +2,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import heroImg1 from "@/assets/photo_2026-01-21_17-22-24.jpg";
 import heroImg2 from "@/assets/photo_2026-01-21_17-33-58.jpg";
 import heroImg3 from "@/assets/photo_2026-01-21_17-34-20.jpg";
+import heroBgImg from "@/assets/photo_2026-01-14_14-46-49.jpg";
 import ImageWithFallback from "./ImageWithFallback";
 import { useState, useEffect } from "react";
 import { useLanguage } from "../context/LanguageContext";
@@ -36,7 +37,13 @@ const HeroSection = () => {
 
         {/* Left Content */}
         <div className="relative flex flex-1 flex-col justify-center p-8 md:p-12 lg:p-20 overflow-hidden">
-          
+          {/* Background Image */}
+          <div 
+            className="absolute inset-0 z-0 bg-cover bg-center bg-no-repeat"
+            style={{ backgroundImage: `url(${heroBgImg})` }}
+          />
+          {/* Dark Overlay for text readability */}
+          <div className="absolute inset-0 z-[1] bg-black/50" />
 
           <div className="relative z-10 max-w-xl">
             {/* Eyebrow */}
@@ -44,7 +51,7 @@ const HeroSection = () => {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.2, duration: 0.6 }}
-              className="mb-4 font-body text-sm font-medium uppercase tracking-[0.2em] text-warm-gray"
+              className="mb-4 font-body text-sm font-medium uppercase tracking-[0.2em] text-white"
             >
               {t.hero.eyebrow}
             </motion.p>
@@ -54,7 +61,7 @@ const HeroSection = () => {
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.4, duration: 0.8 }}
-              className="mb-6 font-display text-5xl font-bold leading-[1.1] tracking-tight text-foreground md:text-6xl lg:text-7xl"
+              className="mb-6 font-display text-5xl font-bold leading-[1.1] tracking-tight text-white md:text-6xl lg:text-7xl"
             >
               {t.hero.title_1}
               <br />
@@ -66,7 +73,7 @@ const HeroSection = () => {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.6, duration: 0.6 }}
-              className="mb-10 max-w-md font-body text-lg leading-relaxed text-muted-foreground"
+              className="mb-10 max-w-md font-body text-lg leading-relaxed text-white/90"
             >
               {t.hero.description}
             </motion.p>
@@ -94,16 +101,16 @@ const HeroSection = () => {
               className="mt-16 flex gap-12 border-t border-border pt-8"
             >
               <div>
-                <p className="font-display text-3xl font-semibold text-foreground">50K+</p>
-                <p className="mt-1 font-body text-sm text-muted-foreground">{t.hero.stats.customers}</p>
+                <p className="font-display text-3xl font-semibold text-white">50K+</p>
+                <p className="mt-1 font-body text-sm text-white/80">{t.hero.stats.customers}</p>
               </div>
               <div>
-                <p className="font-display text-3xl font-semibold text-foreground">200+</p>
-                <p className="mt-1 font-body text-sm text-muted-foreground">{t.hero.stats.arrivals}</p>
+                <p className="font-display text-3xl font-semibold text-white">200+</p>
+                <p className="mt-1 font-body text-sm text-white/80">{t.hero.stats.arrivals}</p>
               </div>
               <div>
-                <p className="font-display text-3xl font-semibold text-foreground">4.9★</p>
-                <p className="mt-1 font-body text-sm text-muted-foreground">{t.hero.stats.rating}</p>
+                <p className="font-display text-3xl font-semibold text-white">4.9★</p>
+                <p className="mt-1 font-body text-sm text-white/80">{t.hero.stats.rating}</p>
               </div>
             </motion.div>
           </div>
