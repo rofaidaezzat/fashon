@@ -37,8 +37,27 @@ export interface SingleProductResponse {
     data: IProduct;
 }
 
-export const getProducts = async (): Promise<ProductResponse> => {
-    const response = await axiosInstance.get<ProductResponse>("api/v1/products");
+export interface GetProductsParams {
+    page?: number;
+    limit?: number;
+    category?: string;
+    sort?: string;
+}
+
+export const getProducts = async (params: GetProductsParams = {}): Promise<ProductResponse> => {
+    const queryParams: any = {
+        page: params.page,
+        limit: params.limit,
+        sort: params.sort,
+    };
+
+    if (params.category && params.category !== "All") {
+        queryParams.category = params.category;
+    }
+
+    const response = await axiosInstance.get<ProductResponse>("api/v1/products", {
+        params: queryParams,
+    });
     return response.data;
 };
 

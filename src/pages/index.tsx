@@ -17,7 +17,7 @@ export default function Home() {
 
   const { data, isLoading } = useQuery({
     queryKey: ["products", "popular"],
-    queryFn: getProducts,
+    queryFn: () => getProducts({ limit: 3 }),
     enabled: isInView,
   });
 

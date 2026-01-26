@@ -1,44 +1,56 @@
-import { useState, useMemo } from "react";
-import { useQuery } from "@tanstack/react-query";
+import { useState, useMemo, useEffect } from "react";
+import { useQuery, keepPreviousData } from "@tanstack/react-query";
 import { getProducts } from "../api/products";
 import ProductCard from "../Components/ProductCard";
 import ProductSkeleton from "../Components/ProductSkeleton";
+import Pagination from "../Components/Pagination";
 import { useLanguage } from "../context/LanguageContext";
+
+const ITEMS_PER_PAGE = 12;
 
 const Shop = () => {
   const { t } = useLanguage();
   const [selectedCategory, setSelectedCategory] = useState("All");
   const [sortOption, setSortOption] = useState("Default");
+  const [currentPage, setCurrentPage] = useState(1);
+
+  // Fetch all products just for categories (once)
+  const { data: allProductsData } = useQuery({
+    queryKey: ["allProductsForCategories"],
+    queryFn: () => getProducts({ limit: 1000 }),
+    staleTime: Infinity,
+  });
+
+  const categories = useMemo(() => {
+    const products = allProductsData?.data || [];
+    const cats = products.map((p) => p.category);
+    return ["All", ...new Set(cats)];
+  }, [allProductsData]);
 
   const { data, isLoading, error } = useQuery({
-    queryKey: ["products"],
-    queryFn: getProducts,
+    queryKey: ["products", currentPage, selectedCategory, sortOption],
+    queryFn: () =>
+      getProducts({
+        page: currentPage,
+        limit: ITEMS_PER_PAGE,
+        category: selectedCategory,
+        sort:
+          sortOption === "Price: Low to High"
+            ? "price"
+            : sortOption === "Price: High to Low"
+            ? "-price"
+            : undefined,
+      }),
+    placeholderData: keepPreviousData,
   });
 
   const products = data?.data || [];
+  const totalPages = data?.pagination?.numberOfPages || 1;
 
-  const categories = useMemo(() => {
-    const cats = products.map((p) => p.category);
-    return ["All", ...new Set(cats)];
-  }, [products]);
-
-  const filteredProducts = useMemo(() => {
-    let result = products;
-
-    if (selectedCategory !== "All") {
-      result = result.filter(
-        (product) => product.category === selectedCategory,
-      );
-    }
-
-    if (sortOption === "Price: Low to High") {
-      result = [...result].sort((a, b) => a.price - b.price);
-    } else if (sortOption === "Price: High to Low") {
-      result = [...result].sort((a, b) => b.price - a.price);
-    }
-
-    return result;
-  }, [products, selectedCategory, sortOption]);
+  // Reset to first page when filters change
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [selectedCategory, sortOption]);
 
 
   if (error)
@@ -108,11 +120,24 @@ const Shop = () => {
                 ? Array.from({ length: 8 }).map((_, index) => (
                     <ProductSkeleton key={index} />
                   ))
-                : filteredProducts.map((product) => (
+                : products.map((product) => (
                     <ProductCard key={product._id} product={product} />
                   ))}
             </div>
           </div>
+          
+          {/* Pagination */}
+          {!isLoading && totalPages > 1 && (
+            <Pagination
+              currentPage={currentPage}
+              totalPages={totalPages}
+              onPageChange={(page) => {
+                setCurrentPage(page);
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+              }}
+            />
+          )}
+
         </div>
       </div>
     </div>
