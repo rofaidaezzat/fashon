@@ -6,14 +6,10 @@ import { useRef } from "react";
 import { getProducts } from "../api/products";
 import ProductSkeleton from "../Components/ProductSkeleton";
 import ProductCard from "../Components/ProductCard";
-import styleInspo1 from "../assets/photo_2026-01-14_14-28-22.jpg";
-import styleInspo2 from "../assets/photo_2026-01-14_14-29-04.jpg";
-import styleInspo3 from "../assets/photo_2026-01-14_14-29-42.jpg";
 import saleModel from "../assets/photo_2026-01-14_14-46-49.jpg";
 import HeroSection from "../Components/HeroSection";
 import ImageWithFallback from "../Components/ImageWithFallback";
 import { useLanguage } from "../context/LanguageContext";
-
 export default function Home() {
   const popularSectionRef = useRef(null);
   const isInView = useInView(popularSectionRef, { once: true, margin: "-100px" });
@@ -31,31 +27,6 @@ export default function Home() {
     <main className="min-h-screen bg-white font-sans text-gray-900">
       {/* Hero Section */}
       <HeroSection />
-
-      {/* Style Inspo Section (Image 1) */}
-      <section className="py-20 bg-white">
-        <div className="container mx-auto px-6">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {[
-              styleInspo1,
-              styleInspo2,
-              styleInspo3,
-            ].map((img, i) => (
-              <div
-                key={i}
-                className="aspect-[3/4] w-full overflow-hidden group relative bg-gray-50"
-              >
-                <ImageWithFallback
-                  src={img}
-                  alt={`Style Inspo ${i + 1}`}
-                  className="w-full h-full object-contain transition-transform duration-700 group-hover:scale-110"
-                />
-                <div className="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
 
       {/* Popular Products (Image 2) */}
       <section className="py-24 bg-gray-50" ref={popularSectionRef}>
