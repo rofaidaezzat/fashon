@@ -85,7 +85,9 @@ export const ar = {
         added: "تمت الإضافة!",
         added_to_cart: "تمت الإضافة للسلة!",
         select_options: "اختر الخيارات",
-        select_prompt: "يرجى تحديد جميع الخيارات لكل قطعة للمتابعة"
+        select_prompt: "يرجى تحديد جميع الخيارات لكل قطعة للمتابعة",
+        note: "ملاحظة",
+        note_placeholder: "أضف ملاحظة لهذا المنتج..."
     },
     cart: {
         title: "سلة التسوق",

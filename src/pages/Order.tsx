@@ -99,7 +99,8 @@ const Order = () => {
                 group.variations.push({
                     quantity: item.quantity,
                     size: item.selectedSize || "Default", 
-                    color: item.selectedColor || "Default" 
+                    color: item.selectedColor || "Default",
+                    note: item.note || "" 
                 });
             });
 
@@ -192,6 +193,11 @@ const Order = () => {
                                                     {t.cart.color}: {item.selectedColor}
                                                 </span>
                                             )}
+                                            {item.note && (
+                                                <span className="block w-full mt-1 text-gray-500 text-xs italic">
+                                                    {t.product.note}: {item.note}
+                                                </span>
+                                            )}
                                         </div>
                                         <div className="mt-2 font-bold text-rose-600">
                                             {t.product.price} {item.product.price.toFixed(2)}
@@ -200,14 +206,14 @@ const Order = () => {
 
                                     <div className="flex items-center gap-3">
                                         <button 
-                                            onClick={() => dispatch(updateQuantity({ productId: item.product._id, quantity: item.quantity - 1, selectedSize: item.selectedSize, selectedColor: item.selectedColor }))}
+                                            onClick={() => dispatch(updateQuantity({ productId: item.product._id, quantity: item.quantity - 1, selectedSize: item.selectedSize, selectedColor: item.selectedColor, note: item.note }))}
                                             className="p-1 rounded-full border border-gray-200 hover:bg-gray-100"
                                         >
                                             <Minus className="w-4 h-4" />
                                         </button>
                                         <span className="w-8 text-center font-medium">{item.quantity}</span>
                                         <button 
-                                            onClick={() => dispatch(updateQuantity({ productId: item.product._id, quantity: item.quantity + 1, selectedSize: item.selectedSize, selectedColor: item.selectedColor }))}
+                                            onClick={() => dispatch(updateQuantity({ productId: item.product._id, quantity: item.quantity + 1, selectedSize: item.selectedSize, selectedColor: item.selectedColor, note: item.note }))}
                                             className="p-1 rounded-full border border-gray-200 hover:bg-gray-100"
                                         >
                                             <Plus className="w-4 h-4" />
@@ -215,7 +221,7 @@ const Order = () => {
                                     </div>
 
                                     <button 
-                                        onClick={() => dispatch(removeFromCart({ productId: item.product._id, selectedSize: item.selectedSize, selectedColor: item.selectedColor }))}
+                                        onClick={() => dispatch(removeFromCart({ productId: item.product._id, selectedSize: item.selectedSize, selectedColor: item.selectedColor, note: item.note }))}
                                         className="p-2 text-gray-400 hover:text-red-500 transition-colors"
                                     >
                                         <Trash2 className="w-5 h-5" />

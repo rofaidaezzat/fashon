@@ -14,7 +14,7 @@ export default function ProductDetails() {
   const { id } = useParams<{ id: string }>();
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [quantity, setQuantity] = useState(1);
-  const [selections, setSelections] = useState<{size: string, color: string}[]>([{size: "", color: ""}]);
+  const [selections, setSelections] = useState<{size: string, color: string, note: string}[]>([{size: "", color: "", note: ""}]);
   const [showSizeGuide, setShowSizeGuide] = useState(false);
 
   const dispatch = useDispatch();
@@ -38,7 +38,7 @@ export default function ProductDetails() {
             if (newQuantity > currentSelections.length) {
                 // Add new empty selections
                 for (let i = currentSelections.length; i < newQuantity; i++) {
-                    newSelections.push({size: "", color: ""});
+                    newSelections.push({size: "", color: "", note: ""});
                 }
             } else if (newQuantity < currentSelections.length) {
                 // Remove last selections
@@ -50,7 +50,7 @@ export default function ProductDetails() {
     });
   };
 
-  const handleSelectionChange = (index: number, field: 'size' | 'color', value: string) => {
+  const handleSelectionChange = (index: number, field: 'size' | 'color' | 'note', value: string) => {
     setSelections(prev => {
         const newSelections = [...prev];
         newSelections[index] = { ...newSelections[index], [field]: value };
@@ -77,7 +77,8 @@ export default function ProductDetails() {
             product, 
             quantity: 1, 
             selectedSize: sel.size, 
-            selectedColor: sel.color 
+            selectedColor: sel.color,
+            note: sel.note
         }));
     });
 
@@ -94,7 +95,8 @@ export default function ProductDetails() {
             product, 
             quantity: 1, 
             selectedSize: sel.size, 
-            selectedColor: sel.color 
+            selectedColor: sel.color,
+            note: sel.note
         }));
     });
 
@@ -281,6 +283,20 @@ export default function ProductDetails() {
                                 </div>
                             </div>
                             )}
+
+                            {/* Note Input */}
+                            <div className="mt-4">
+                                <h3 className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">
+                                    {t.product.note || "Note"}
+                                </h3>
+                                <input
+                                    type="text"
+                                    value={selection.note}
+                                    onChange={(e) => handleSelectionChange(index, "note", e.target.value)}
+                                    placeholder={t.product.note_placeholder || "Add a note for this item..."}
+                                    className="w-full px-4 py-2 text-sm rounded-lg border border-gray-200 focus:ring-2 focus:ring-rose-500 focus:border-transparent outline-none transition-all"
+                                />
+                            </div>
                         </div>
                     ))}
                 </div>

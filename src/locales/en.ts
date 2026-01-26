@@ -85,7 +85,9 @@ export const en = {
         added: "Added!",
         added_to_cart: "Added to Cart!",
         select_options: "Select Options",
-        select_prompt: "Please select all options for each item to continue"
+        select_prompt: "Please select all options for each item to continue",
+        note: "Note",
+        note_placeholder: "Add a note for this item..."
     },
     cart: {
         title: "Shopping Cart",

@@ -4,6 +4,7 @@ export interface OrderVariation {
     quantity: number;
     size: string;
     color: string;
+    note: string;
 }
 
 export interface OrderItem {
@@ -22,7 +23,6 @@ export interface ShippingAddress {
     details: string;
     phone: string;
 }
-
 export interface CreateOrderPayload {
     userInfo: UserInfo;
     cartItems: OrderItem[];

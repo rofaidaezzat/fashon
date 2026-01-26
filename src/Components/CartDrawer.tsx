@@ -51,20 +51,22 @@ const CartDrawer = ({ isOpen, onClose }: CartDrawerProps) => {
     productId: string,
     quantity: number,
     selectedSize?: string,
-    selectedColor?: string
+    selectedColor?: string,
+    note?: string
   ) => {
     if (quantity < 1) {
       return; 
     }
-    dispatch(updateQuantity({ productId, quantity, selectedSize, selectedColor }));
+    dispatch(updateQuantity({ productId, quantity, selectedSize, selectedColor, note }));
   };
 
   const handleRemoveItem = (
     productId: string,
     selectedSize?: string,
-    selectedColor?: string
+    selectedColor?: string,
+    note?: string
   ) => {
-    dispatch(removeFromCart({ productId, selectedSize, selectedColor }));
+    dispatch(removeFromCart({ productId, selectedSize, selectedColor, note }));
   };
 
   const handleCheckout = () => {
@@ -155,7 +157,7 @@ const CartDrawer = ({ isOpen, onClose }: CartDrawerProps) => {
                           <div className="flex justify-between items-start mb-1">
                             <h3 className="font-medium text-gray-900 line-clamp-1">{item.product.name}</h3>
                             <button 
-                              onClick={() => handleRemoveItem(item.product._id, item.selectedSize, item.selectedColor)}
+                              onClick={() => handleRemoveItem(item.product._id, item.selectedSize, item.selectedColor, item.note)}
                               className="text-gray-400 hover:text-red-500 transition-colors p-1"
                               aria-label="Remove item"
                             >
@@ -169,6 +171,9 @@ const CartDrawer = ({ isOpen, onClose }: CartDrawerProps) => {
                             )}
                             {item.selectedColor && item.selectedColor !== "Default" && (
                               <p>{t.cart.color}: {item.selectedColor}</p>
+                            )}
+                            {item.note && (
+                              <p className="italic text-xs">{t.product.note}: {item.note}</p>
                             )}
                           </div>
                         </div>
@@ -184,7 +189,8 @@ const CartDrawer = ({ isOpen, onClose }: CartDrawerProps) => {
                                 item.product._id,
                                 item.quantity - 1,
                                 item.selectedSize,
-                                item.selectedColor
+                                item.selectedColor,
+                                item.note
                               )}
                               className={`w-7 h-7 flex items-center justify-center rounded-md bg-white border border-gray-200 text-gray-600 transition-all shadow-sm ${
                                 item.quantity <= 1 
@@ -201,7 +207,8 @@ const CartDrawer = ({ isOpen, onClose }: CartDrawerProps) => {
                                 item.product._id,
                                 item.quantity + 1,
                                 item.selectedSize,
-                                item.selectedColor
+                                item.selectedColor,
+                                item.note
                               )}
                               className="w-7 h-7 flex items-center justify-center rounded-md bg-white border border-gray-200 text-gray-600 hover:border-gray-400 hover:text-rose-600 transition-all shadow-sm"
                             >
